@@ -187,7 +187,7 @@ export default function Review({ stats, onResult }: Props) {
           <p className="feedback" aria-live="polite">
             {answer && (
               <>
-                {correct ? 'Yes. ' : 'Not quite. '}
+                {correct ? <span className="ok">Yes. </span> : <span className="no">Not quite. </span>}
                 <b lang="ja">{q.kana.kana}</b> is <b>{q.kana.romaji}</b>: {q.kana.title.toLowerCase()}.
               </>
             )}

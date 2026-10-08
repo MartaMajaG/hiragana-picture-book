@@ -1041,6 +1041,13 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
   box-shadow: inset 0 0 0 4px transparent, inset 0 0 0 5.2px rgba(52, 41, 31, 0.75);
 }
 
+/* review marks: a green circle and wash for a right answer; red is kept for mistakes only */
+.opt.right { border-color: rgba(84, 128, 72, 0.6); background: rgba(108, 150, 92, 0.12); }
+.opt.right::after { background: #4f8a45; opacity: 0.9; }
+.opt.wrong::after { background: var(--shu); }
+.feedback .ok { color: #3f7a37; font-weight: 700; }
+.feedback .no { color: var(--bad); font-weight: 700; }
+
 @media (prefers-reduced-motion: reduce) { .lift.on .sticker-art, .lift.pressed .sticker-art { transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {
