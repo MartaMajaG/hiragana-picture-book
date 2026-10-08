@@ -6,6 +6,7 @@ import Lesson, { type LessonMode } from './views/Lesson';
 import Review from './views/Review';
 import Album from './views/Album';
 import StickerToast from './components/StickerToast';
+import CoinPurse from './components/CoinPurse';
 import { KANA, kanaIndex } from './data/kana';
 import { STICKERS, newlyEarned } from './data/stickers';
 import { MON, currentStreak, loadProgress, saveProgress, touchDay, type Progress } from './lib/progress';
@@ -30,6 +31,7 @@ export default function App() {
   const [help, setHelp] = useState(false);
   const [lastIndex, setLastIndex] = useState(route.view === 'lesson' ? route.index : 0);
   const [toasts, setToasts] = useState<string[]>([]);
+  const [purse, setPurse] = useState(false);
 
   useEffect(() => {
     const onHash = () => setRoute(parseHash());
@@ -143,7 +145,7 @@ export default function App() {
             Stickers <span className="nav-count">{stickerCount}/{STICKERS.length}</span>
           </button>
         </nav>
-        <button type="button" className="purse" onClick={() => setRoute({ view: 'stickers' })} title="Mon earned and days in a row">
+        <button type="button" className="purse" onClick={() => setPurse(true)} title="Your purse: mon earned and days in a row">
           <span className="coin" lang="ja" aria-hidden="true">文</span>
           <b>{progress.mon}</b>
           <span className="sep" aria-hidden="true" />
@@ -182,7 +184,7 @@ export default function App() {
         ) : route.view === 'review' ? (
           <Review stats={progress.review} onResult={recordReview} />
         ) : (
-          <Album progress={progress} />
+          <Album progress={progress} onOpenPurse={() => setPurse(true)} />
         )}
       </main>
 
@@ -195,6 +197,7 @@ export default function App() {
       </footer>
 
       {help && <HelpSheet topic={topic} onClose={() => setHelp(false)} />}
+      {purse && <CoinPurse progress={progress} onClose={() => setPurse(false)} />}
       {toasts.length > 0 && (
         <StickerToast id={toasts[0]} onDone={dropToast} onOpen={() => { dropToast(); setRoute({ view: 'stickers' }); }} />
       )}

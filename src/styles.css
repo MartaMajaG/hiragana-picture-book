@@ -1066,6 +1066,28 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
 
 .purse .unit { font-family: var(--hand); font-size: 14px; color: var(--muted); }
 
+/* the purse: mon as Edo coins */
+.stat-button { display: flex; align-items: center; gap: 12px; padding: 4px 10px 4px 4px; margin: -4px -10px -4px -4px; border: 0; border-radius: 10px; background: none; color: inherit; cursor: pointer; text-align: left; }
+.stat-button:hover { background: rgba(239, 230, 214, 0.08); }
+.stat-button:hover small { color: var(--ink); }
+.purse-sheet { width: min(620px, 100%); }
+.purse-sheet h2 [lang] { color: var(--shu); margin-right: 6px; }
+.purse-total { margin: 10px 0 4px; font-family: var(--hand); color: var(--muted); }
+.purse-total b { font-family: var(--f-display); font-size: 34px; color: var(--ink); margin-right: 4px; }
+.coins { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 10px 14px; padding: 18px 16px; margin: 6px 0 14px; border-radius: 8px; background: rgba(120, 85, 40, 0.07); min-height: 90px; }
+.sashi-wrap { display: flex; flex-direction: column; align-items: center; gap: 2px; font-family: var(--hand); font-size: 12px; color: var(--muted); }
+.loose { display: flex; flex-wrap: wrap; gap: 2px; max-width: 360px; align-items: center; }
+.loose .coin-face { margin-right: -12px; filter: drop-shadow(0 2px 2px rgba(60, 35, 15, 0.3)); }
+.coins .more { font-family: var(--hand); color: var(--muted); font-size: 14px; margin-left: 14px; }
+.coins-empty { margin: 0; font-family: var(--hand); color: var(--muted); }
+.purse-note { font-size: 15px; color: var(--muted); line-height: 1.6; }
+.purse-sheet h3 { font-family: var(--f-display); font-size: 19px; margin: 18px 0 6px; }
+.earn-list { list-style: none; margin: 0; padding: 0; }
+.earn-list li { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-top: 1px dotted var(--line); font-size: 15px; }
+.earn-list b { font-family: var(--hand); color: #8f6a2c; font-variant-numeric: tabular-nums; }
+.purse-next { font-family: var(--hand); font-size: 15px; margin: 14px 0 16px; }
+.purse-next b { color: var(--shu); }
+
 @media (prefers-reduced-motion: reduce) { .lift.on .sticker-art, .lift.pressed .sticker-art { transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {

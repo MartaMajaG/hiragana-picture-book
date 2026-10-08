@@ -5,7 +5,7 @@ import { currentStreak, type Progress } from '../lib/progress';
 import { KANA } from '../data/kana';
 
 /** The sticker album: two pages of slots, filled in as stickers are earned. */
-export default function Album({ progress }: { progress: Progress }) {
+export default function Album({ progress, onOpenPurse }: { progress: Progress; onOpenPurse: () => void }) {
   const earned = STICKERS.filter((s) => progress.stickers[s.id]).length;
   const streak = currentStreak(progress);
   // The nearest stickers still to earn, to give a reason to keep going.
@@ -26,11 +26,13 @@ export default function Album({ progress }: { progress: Progress }) {
         </div>
         <ul className="stats" aria-label="Your progress">
           <li>
-            <span className="stat-icon coin" lang="ja" aria-hidden="true">文</span>
-            <span className="stat-text">
-              <b>{progress.mon}</b>
-              <small>mon earned</small>
-            </span>
+            <button type="button" className="stat-button" onClick={onOpenPurse}>
+              <span className="stat-icon coin" lang="ja" aria-hidden="true">文</span>
+              <span className="stat-text">
+                <b>{progress.mon}</b>
+                <small>mon earned · open purse</small>
+              </span>
+            </button>
           </li>
           <li>
             <span className="stat-icon" lang="ja" aria-hidden="true">日</span>
