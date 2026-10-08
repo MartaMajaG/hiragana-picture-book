@@ -33,6 +33,7 @@ export default function App() {
   const [lastIndex, setLastIndex] = useState(route.view === 'lesson' ? route.index : 0);
   const [toasts, setToasts] = useState<string[]>([]);
   const [purse, setPurse] = useState(false);
+  const [albumTab, setAlbumTab] = useState<'album' | 'gacha'>('album');
   // the sticker currently being dragged into the album, if any
   const [placing, setPlacing] = useState<string | null>(null);
   const placeSticker = useCallback(
@@ -197,6 +198,8 @@ export default function App() {
         ) : (
           <Album
             progress={progress}
+            tab={albumTab}
+            onTab={setAlbumTab}
             onOpenPurse={() => setPurse(true)}
             placing={placing}
             onPlace={setPlacing}
@@ -223,7 +226,19 @@ export default function App() {
       </footer>
 
       {help && <HelpSheet topic={topic} onClose={() => setHelp(false)} />}
-      {purse && <CoinPurse progress={progress} onClose={() => setPurse(false)} />}
+      {purse && (
+        <CoinPurse
+          progress={progress}
+          onClose={() => setPurse(false)}
+          onGacha={() => {
+            setPurse(false);
+            setAlbumTab('gacha');
+            setRoute({ view: 'stickers' });
+            // bring the machine itself into view, below the album's header
+            window.setTimeout(() => document.querySelector('.album .book')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60);
+          }}
+        />
+      )}
       {toasts.length > 0 && (
         <NewSticker
           id={toasts[0]}

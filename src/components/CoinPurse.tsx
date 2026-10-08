@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { MON } from '../lib/progress';
 import { STICKERS } from '../data/stickers';
 import type { Progress } from '../lib/progress';
-import { balance } from '../data/gacha';
+import { GACHA_COST, balance } from '../data/gacha';
 
 /** One copper mon coin, face on: a square hole and the four characters of a Kan'ei Tsūhō (寛永通寳). */
 function Coin({ size = 46, tilt = 0 }: { size?: number; tilt?: number }) {
@@ -52,7 +52,7 @@ const EARN: [string, number][] = [
 ];
 
 /** The purse: your mon shown as real Edo-period coins, strings of 100 and loose change. */
-export default function CoinPurse({ progress, onClose }: { progress: Progress; onClose: () => void }) {
+export default function CoinPurse({ progress, onClose, onGacha }: { progress: Progress; onClose: () => void; onGacha: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     ref.current?.focus();
@@ -84,15 +84,20 @@ export default function CoinPurse({ progress, onClose }: { progress: Progress; o
           </button>
         </div>
 
-        <p className="purse-total">
-          <b>{mon}</b> mon to spend
-          {strings > 0 && (
-            <span>
-              {' '}
-              · {strings} {strings === 1 ? 'string' : 'strings'} of 100{loose ? ` and ${loose} loose` : ''}
-            </span>
-          )}
-        </p>
+        {/* what the coins are for, first */}
+        <div className="purse-hero">
+          <p className="purse-total">
+            <b>{mon}</b> mon to spend
+          </p>
+          <p className="purse-use">
+            {mon >= GACHA_COST
+              ? `Enough for ${Math.floor(mon / GACHA_COST)} ${Math.floor(mon / GACHA_COST) === 1 ? 'turn' : 'turns'} at the gachapon, ${GACHA_COST} mon each. Every capsule holds a sticker.`
+              : `The gachapon costs ${GACHA_COST} mon a turn. ${GACHA_COST - mon} more to go: open lessons, write and review to earn them.`}
+          </p>
+          <button type="button" className="btn primary" onClick={onGacha}>
+            Go to the gachapon →
+          </button>
+        </div>
 
         <div className="coins" aria-label={`${mon} mon`}>
           {mon === 0 && <p className="coins-empty">Your purse is empty. Open a lesson to earn your first mon.</p>}
@@ -105,40 +110,45 @@ export default function CoinPurse({ progress, onClose }: { progress: Progress; o
           {strings > shownStrings && <span className="more">+{strings - shownStrings} strings</span>}
           <span className="loose">
             {Array.from({ length: shownLoose }, (_, i) => (
-              <Coin key={i} size={42} tilt={(i * 37) % 90} />
+              <Coin key={i} size={34} tilt={(i * 37) % 90} />
             ))}
             {loose > shownLoose && <span className="more">+{loose - shownLoose}</span>}
           </span>
         </div>
-
-        {progress.spent > 0 && (
+        {strings > 0 && (
           <p className="purse-small">
-            {progress.mon} earned in total, {progress.spent} spent at the gachapon.
+            {strings} {strings === 1 ? 'string' : 'strings'} of 100 coins{loose ? ` and ${loose} loose` : ''}
+            {progress.spent > 0 ? ` · ${progress.mon} earned in total, ${progress.spent} spent` : ''}
           </p>
         )}
 
-        <p className="purse-note">
-          Mon (文) were the copper coins of Edo Japan, like this <span lang="ja">寛永通寳</span> Kan&apos;ei Tsūhō, minted for over
-          two hundred years. The square hole let people thread them on a cord. A string of 96 coins was accepted as 100: the
-          missing four paid whoever strung them.
-        </p>
-
-        <p className="purse-small">Spend mon at the gachapon in the sticker book: {30} mon a capsule.</p>
-
-        <h3>How to earn mon</h3>
-        <ul className="earn-list">
-          {EARN.map(([what, n]) => (
-            <li key={what}>
-              <span>{what}</span>
-              <b>+{n}</b>
-            </li>
-          ))}
-        </ul>
         {next && (
           <p className="purse-next">
-            Next treasure: <b lang="ja">{next.s.jp}</b> {next.s.name} at {next.need} mon, {Math.max(0, next.need - progress.mon)} to go.
+            Next treasure sticker: <b lang="ja">{next.s.jp}</b> {next.s.name} at {next.need} mon earned, {Math.max(0, next.need - progress.mon)} to go.
           </p>
         )}
+
+        <details className="purse-more">
+          <summary>How to earn mon</summary>
+          <ul className="earn-list">
+            {EARN.map(([what, n]) => (
+              <li key={what}>
+                <span>{what}</span>
+                <b>+{n}</b>
+              </li>
+            ))}
+          </ul>
+        </details>
+        <details className="purse-more">
+          <summary>
+            About these coins <span lang="ja">寛永通寳</span>
+          </summary>
+          <p className="purse-note">
+            Mon (文) were the copper coins of Edo Japan, like this Kan&apos;ei Tsūhō, minted for over two hundred years. The square
+            hole let people thread them on a cord. A string of 96 coins was accepted as 100: the missing four paid whoever strung
+            them.
+          </p>
+        </details>
       </div>
     </div>
   );

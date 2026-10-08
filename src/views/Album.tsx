@@ -14,11 +14,13 @@ interface AlbumProps {
   onPlace: (id: string | null) => void;
   onPlaced: (id: string) => void;
   onPull: () => { capsule: Capsule; isNew: boolean } | null;
+  /** Which page of the sticker book is open: the album or the gachapon. */
+  tab: 'album' | 'gacha';
+  onTab: (t: 'album' | 'gacha') => void;
 }
 
 /** The sticker album: two pages of slots, filled in by hand as stickers are earned. */
-export default function Album({ progress, onOpenPurse, placing, onPlace, onPlaced, onPull }: AlbumProps) {
-  const [tab, setTab] = useState<'album' | 'gacha'>('album');
+export default function Album({ progress, onOpenPurse, placing, onPlace, onPlaced, onPull, tab, onTab: setTab }: AlbumProps) {
   useEffect(() => {
     if (placing) setTab('album');
   }, [placing]);
