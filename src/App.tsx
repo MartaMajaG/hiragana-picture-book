@@ -148,7 +148,7 @@ export default function App() {
           <b>{progress.mon}</b>
           <span className="sep" aria-hidden="true" />
           <b>{streak}</b>
-          <span lang="ja">日</span>
+          <span className="unit">{streak === 1 ? 'day' : 'days'}</span>
           <span className="sr-only">
             {progress.mon} mon, {streak} day streak
           </span>

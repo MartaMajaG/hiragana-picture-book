@@ -24,30 +24,42 @@ export default function Album({ progress }: { progress: Progress }) {
             {earned} of {STICKERS.length} stickers collected. Learn, write and review to earn mon and fill the pages.
           </p>
         </div>
-        <dl className="purse-stats">
-          <div>
-            <dt>Mon</dt>
-            <dd>
-              <span lang="ja">文</span> {progress.mon}
-            </dd>
-          </div>
-          <div>
-            <dt>Day streak</dt>
-            <dd>
-              {streak} <span lang="ja">日</span>
-            </dd>
-          </div>
-          <div>
-            <dt>Best run</dt>
-            <dd>{progress.bestRun}</dd>
-          </div>
-          <div>
-            <dt>Written</dt>
-            <dd>
-              {progress.written.length}/{KANA.length}
-            </dd>
-          </div>
-        </dl>
+        <ul className="stats" aria-label="Your progress">
+          <li>
+            <span className="stat-icon coin" lang="ja" aria-hidden="true">文</span>
+            <span className="stat-text">
+              <b>{progress.mon}</b>
+              <small>mon earned</small>
+            </span>
+          </li>
+          <li>
+            <span className="stat-icon" lang="ja" aria-hidden="true">日</span>
+            <span className="stat-text">
+              <b>{streak}</b>
+              <small>{streak === 1 ? 'day' : 'days'} in a row</small>
+            </span>
+          </li>
+          <li>
+            <span className="stat-icon" lang="ja" aria-hidden="true">連</span>
+            <span className="stat-text">
+              <b>{progress.bestRun}</b>
+              <small>best run of right answers</small>
+            </span>
+          </li>
+          <li>
+            <span className="stat-icon" lang="ja" aria-hidden="true">書</span>
+            <span className="stat-text">
+              <b>
+                {progress.written.length}
+                <span className="of"> / {KANA.length}</span>
+              </b>
+              <small>characters written</small>
+              <span className="bar" aria-hidden="true">
+                <span style={{ width: `${(progress.written.length / KANA.length) * 100}%` }} />
+              </span>
+            </span>
+          </li>
+        </ul>
       </div>
 
       {next.length > 0 && (
