@@ -4,20 +4,24 @@ import KanaChart from './components/KanaChart';
 import HelpSheet, { type HelpTopic } from './components/HelpSheet';
 import Lesson, { type LessonMode } from './views/Lesson';
 import Review from './views/Review';
+import Album from './views/Album';
+import StickerToast from './components/StickerToast';
 import { KANA, kanaIndex } from './data/kana';
-import { loadProgress, saveProgress, type Progress } from './lib/progress';
+import { STICKERS, newlyEarned } from './data/stickers';
+import { MON, currentStreak, loadProgress, saveProgress, touchDay, type Progress } from './lib/progress';
 
-type Route = { view: 'lesson'; index: number; mode: LessonMode } | { view: 'review' };
+type Route = { view: 'lesson'; index: number; mode: LessonMode } | { view: 'review' } | { view: 'stickers' };
 
-// Routes live in the URL hash so they survive a reload and can be linked: #/learn/ka, #/practice/ka, #/review
+// Routes live in the URL hash so they survive a reload and can be linked: #/learn/ka, #/practice/ka, #/review, #/stickers
 function parseHash(): Route {
   const [, a, b] = window.location.hash.split('/');
   if (a === 'review') return { view: 'review' };
+  if (a === 'stickers') return { view: 'stickers' };
   const index = Math.max(0, kanaIndex(b ?? ''));
   return { view: 'lesson', index, mode: a === 'practice' ? 'practice' : 'learn' };
 }
 function toHash(r: Route) {
-  return r.view === 'review' ? '#/review' : `#/${r.mode}/${KANA[r.index].romaji}`;
+  return r.view === 'lesson' ? `#/${r.mode}/${KANA[r.index].romaji}` : `#/${r.view}`;
 }
 
 export default function App() {
@@ -25,6 +29,7 @@ export default function App() {
   const [progress, setProgress] = useState<Progress>(loadProgress);
   const [help, setHelp] = useState(false);
   const [lastIndex, setLastIndex] = useState(route.view === 'lesson' ? route.index : 0);
+  const [toasts, setToasts] = useState<string[]>([]);
 
   useEffect(() => {
     const onHash = () => setRoute(parseHash());
@@ -40,6 +45,23 @@ export default function App() {
     }
   }, [route]);
   useEffect(() => saveProgress(progress), [progress]);
+
+  // Opening a lesson for the first time earns a mon and counts towards the day's practice.
+  const openedRomaji = route.view === 'lesson' ? KANA[route.index].romaji : null;
+  useEffect(() => {
+    if (!openedRomaji) return;
+    setProgress((p) => (p.opened.includes(openedRomaji) ? p : touchDay({ ...p, opened: [...p.opened, openedRomaji], mon: p.mon + MON.open })));
+  }, [openedRomaji]);
+
+  // Award any sticker whose goal has just been met, and announce it.
+  useEffect(() => {
+    const fresh = newlyEarned(progress);
+    if (!fresh.length) return;
+    const now = new Date().toISOString();
+    setProgress((p) => ({ ...p, stickers: { ...p.stickers, ...Object.fromEntries(fresh.map((x) => [x.id, now])) } }));
+    setToasts((t) => [...t, ...fresh.map((x) => x.id)]);
+  }, [progress]);
+  const dropToast = useCallback(() => setToasts((t) => t.slice(1)), []);
 
   const go = (index: number, mode?: LessonMode) =>
     setRoute((r) => ({
@@ -60,22 +82,44 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey);
   }, [route, help]);
 
+  // Writing from memory: 5 mon the first time, 2 after that, and 3 more for a write with no slips.
   const markWritten = useCallback(
-    (romaji: string) =>
-      setProgress((p) => (p.written.includes(romaji) ? p : { ...p, written: [...p.written, romaji] })),
+    (romaji: string, retries: number) =>
+      setProgress((p) => {
+        const first = !p.written.includes(romaji);
+        const clean = retries === 0;
+        return touchDay({
+          ...p,
+          written: first ? [...p.written, romaji] : p.written,
+          mon: p.mon + (first ? MON.write : MON.rewrite) + (clean ? MON.perfect : 0),
+          perfect: p.perfect + (clean ? 1 : 0),
+        });
+      }),
     [],
   );
+  // Review: a mon per right answer, more while a run of right answers keeps going.
   const recordReview = useCallback(
     (romaji: string, right: boolean) =>
       setProgress((p) => {
         const s = p.review[romaji] ?? { right: 0, wrong: 0 };
-        return { ...p, review: { ...p.review, [romaji]: right ? { ...s, right: s.right + 1 } : { ...s, wrong: s.wrong + 1 } } };
+        const run = right ? p.run + 1 : 0;
+        const earned = right ? MON.right + (run >= 10 ? MON.runBonus10 : run >= 5 ? MON.runBonus5 : 0) : 0;
+        return touchDay({
+          ...p,
+          review: { ...p.review, [romaji]: right ? { ...s, right: s.right + 1 } : { ...s, wrong: s.wrong + 1 } },
+          answered: p.answered + 1,
+          run,
+          bestRun: Math.max(p.bestRun, run),
+          mon: p.mon + earned,
+        });
       }),
     [],
   );
   const dismissTip = () => setProgress((p) => ({ ...p, tipsSeen: [...p.tipsSeen, 'practice'] }));
 
-  const topic: HelpTopic = route.view === 'review' ? 'review' : route.mode;
+  const topic: HelpTopic = route.view === 'lesson' ? route.mode : route.view;
+  const streak = currentStreak(progress);
+  const stickerCount = Object.keys(progress.stickers).length;
 
   return (
     <>
@@ -83,9 +127,9 @@ export default function App() {
       <header className="appbar">
         <a className="brand" href="#/learn/a" onClick={(e) => { e.preventDefault(); go(0, 'learn'); }}>
           <span className="mark" lang="ja" aria-hidden="true">あ</span>
-          <span>
+          <span className="daisen">
+            <small lang="ja">ひらがな絵本</small>
             <b>Hiragana Picture Book</b>
-            <small lang="ja">ひらがな えほん</small>
           </span>
         </a>
         <nav aria-label="Main">
@@ -95,7 +139,20 @@ export default function App() {
           <button type="button" aria-current={route.view === 'review' ? 'page' : undefined} onClick={() => setRoute({ view: 'review' })}>
             Review
           </button>
+          <button type="button" aria-current={route.view === 'stickers' ? 'page' : undefined} onClick={() => setRoute({ view: 'stickers' })}>
+            Stickers <span className="nav-count">{stickerCount}/{STICKERS.length}</span>
+          </button>
         </nav>
+        <button type="button" className="purse" onClick={() => setRoute({ view: 'stickers' })} title="Mon earned and days in a row">
+          <span className="coin" lang="ja" aria-hidden="true">文</span>
+          <b>{progress.mon}</b>
+          <span className="sep" aria-hidden="true" />
+          <b>{streak}</b>
+          <span lang="ja">日</span>
+          <span className="sr-only">
+            {progress.mon} mon, {streak} day streak
+          </span>
+        </button>
         <button type="button" className="icon-btn help" aria-label="Help" aria-haspopup="dialog" onClick={() => setHelp(true)}>
           ?
         </button>
@@ -122,8 +179,10 @@ export default function App() {
               }}
             />
           </>
-        ) : (
+        ) : route.view === 'review' ? (
           <Review stats={progress.review} onResult={recordReview} />
+        ) : (
+          <Album progress={progress} />
         )}
       </main>
 
@@ -136,6 +195,9 @@ export default function App() {
       </footer>
 
       {help && <HelpSheet topic={topic} onClose={() => setHelp(false)} />}
+      {toasts.length > 0 && (
+        <StickerToast id={toasts[0]} onDone={dropToast} onOpen={() => { dropToast(); setRoute({ view: 'stickers' }); }} />
+      )}
     </>
   );
 }

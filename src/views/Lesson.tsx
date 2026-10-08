@@ -1,16 +1,77 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import KanaStage from '../components/KanaStage';
 import TracePad, { type TracePhase } from '../components/TracePad';
-import { KANA, STROKES, type Kana } from '../data/kana';
+import { KANA, STROKES, kanaIndex, type Kana } from '../data/kana';
+import Egg, { kanjiNum, numberNote } from '../components/Egg';
 
 export type LessonMode = 'learn' | 'practice';
+
+/**
+ * Print details for the spread, each a little easter egg with a note: folios (each lesson is one opening, two pages),
+ * the running head, the owner's seal and the silk bookmark.
+ */
+function PrintDetails({ kana }: { kana: Kana }) {
+  const left = kanaIndex(kana.romaji) * 2 + 1;
+  const rowRomaji = KANA.find((k) => k.kana === kana.row)?.romaji ?? kana.romaji;
+  return (
+    <>
+      <Egg className="folio l" note={numberNote(left)}>{kanjiNum(left)}</Egg>
+      <Egg className="folio r" note={numberNote(left + 1)}>{kanjiNum(left + 1)}</Egg>
+      <Egg
+        className="hashira"
+        place="left"
+        note={
+          <>
+            <b lang="ja">{kana.row}行</b> <i>{rowRomaji}-gyō</i> · the {rowRomaji} row. <b lang="ja">ひらがな絵本</b>{' '}
+            <i>hiragana ehon</i> · hiragana picture book.
+            <span className="egg-fact">
+              Old Japanese books printed the title down the outer margin of every page. It's called the hashira, the
+              pillar.
+            </span>
+          </>
+        }
+      >
+        {kana.row}行　ひらがな絵本
+      </Egg>
+      <Egg
+        className="zousho"
+        place="left"
+        note={
+          <>
+            <b lang="ja">絵本</b> <i>ehon</i> · picture book: 絵 picture + 本 book.
+            <span className="egg-fact">
+              Book lovers stamped their books with a red seal called a zōshoin, a collection seal. Some old books carry a
+              whole trail of them, one for each owner.
+            </span>
+          </>
+        }
+      >
+        絵本
+      </Egg>
+      <Egg
+        className="shiori"
+        place="right"
+        note={
+          <>
+            <b lang="ja">栞</b> <i>shiori</i> · bookmark.
+            <span className="egg-fact">
+              It comes from shiori, bending twigs to mark your way through a forest so you could find the path back.
+            </span>
+          </>
+        }
+      >
+        {''}
+      </Egg>
+    </>
+  );
+}
 
 interface Props {
   index: number;
   mode: LessonMode;
   onMode: (m: LessonMode) => void;
   onGo: (index: number) => void;
-  onWritten: (romaji: string) => void;
+  onWritten: (romaji: string, retries: number) => void;
   showPracticeTip: boolean;
   onDismissTip: () => void;
 }
@@ -28,12 +89,34 @@ const icon = {
       <circle cx="8" cy="8" r="2" />
     </svg>
   ),
+  chevronLeft: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M10 3 5 8l5 5" />
+    </svg>
+  ),
+  chevronRight: (
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="m6 3 5 5-5 5" />
+    </svg>
+  ),
 };
 
 export default function Lesson({ index, mode, onMode, onGo, onWritten, showPracticeTip, onDismissTip }: Props) {
   const kana = KANA[index];
   const prev = KANA[(index - 1 + KANA.length) % KANA.length];
   const next = KANA[(index + 1) % KANA.length];
+
+  // Swipe across the book to turn the page (but not while writing on the practice pad).
+  const touchX = useRef<number | null>(null);
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchX.current = (e.target as HTMLElement).closest('.pad') ? null : e.touches[0].clientX;
+  };
+  const onTouchEnd = (e: React.TouchEvent) => {
+    if (touchX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    touchX.current = null;
+    if (Math.abs(dx) > 60) onGo(index + (dx < 0 ? 1 : -1));
+  };
 
   return (
     <section className="lesson" aria-label={`Lesson: ${kana.kana}`}>
@@ -45,36 +128,40 @@ export default function Lesson({ index, mode, onMode, onGo, onWritten, showPract
             {kana.row} row · {index + 1} of {KANA.length}
           </span>
         </div>
-        <div className="seg" role="tablist" aria-label="Lesson mode">
+      </div>
+
+      <div className="book" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+        {/* index tabs sticking out of the top of the book */}
+        <div className="book-tabs" role="tablist" aria-label="Lesson mode">
           {(['learn', 'practice'] as const).map((m) => (
-            <button key={m} type="button" role="tab" aria-selected={mode === m} onClick={() => onMode(m)}>
+            <button key={m} type="button" role="tab" aria-selected={mode === m} className={`tab ${m}`} onClick={() => onMode(m)}>
+              <span lang="ja">{m === 'learn' ? '学ぶ' : '書く'}</span>
               {m === 'learn' ? 'Learn' : 'Practice'}
             </button>
           ))}
         </div>
-        <div className="step-nav">
-          <button type="button" className="btn ghost" onClick={() => onGo(index - 1)} aria-label={`Previous: ${prev.kana}`}>
-            ← <span lang="ja">{prev.kana}</span>
-          </button>
-          <button type="button" className="btn ghost" onClick={() => onGo(index + 1)} aria-label={`Next: ${next.kana}`}>
-            <span lang="ja">{next.kana}</span> →
-          </button>
-        </div>
+        <button type="button" className="turn prev" onClick={() => onGo(index - 1)} aria-label={`Previous page: ${prev.kana}`}>
+          {icon.chevronLeft}
+          <span lang="ja">{prev.kana}</span>
+        </button>
+        {mode === 'learn' ? (
+          <LearnPanel kana={kana} onPractice={() => onMode('practice')} />
+        ) : (
+          <PracticePanel
+            key={kana.romaji}
+            kana={kana}
+            next={next}
+            onNext={() => onGo(index + 1)}
+            onWritten={onWritten}
+            showTip={showPracticeTip}
+            onDismissTip={onDismissTip}
+          />
+        )}
+        <button type="button" className="turn next" onClick={() => onGo(index + 1)} aria-label={`Next page: ${next.kana}`}>
+          {icon.chevronRight}
+          <span lang="ja">{next.kana}</span>
+        </button>
       </div>
-
-      {mode === 'learn' ? (
-        <LearnPanel kana={kana} onPractice={() => onMode('practice')} />
-      ) : (
-        <PracticePanel
-          key={kana.romaji}
-          kana={kana}
-          next={next}
-          onNext={() => onGo(index + 1)}
-          onWritten={onWritten}
-          showTip={showPracticeTip}
-          onDismissTip={onDismissTip}
-        />
-      )}
     </section>
   );
 }
@@ -84,8 +171,24 @@ function LearnPanel({ kana, onPractice }: { kana: Kana; onPractice: () => void }
   const [replay, setReplay] = useState(0);
   return (
     <div className="spread">
+      <PrintDetails kana={kana} />
       <div className="plate">
         <KanaStage kana={kana} picture={picture} numbers={!picture} replayKey={replay} />
+        <Egg
+          className="tate"
+          place="left"
+          note={
+            <>
+              <b lang="ja">{kana.word.kana}</b> <i>{kana.word.reading}</i>
+              <span className="egg-fact">
+                Written top to bottom, right to left: tategaki. Most Japanese novels, newspapers and manga are still printed
+                this way.
+              </span>
+            </>
+          }
+        >
+          {kana.word.kana}
+        </Egg>
         <div className="tools">
           <button type="button" className="chip" onClick={() => setReplay((r) => r + 1)}>
             {icon.replay}Replay strokes
@@ -113,7 +216,7 @@ function LearnPanel({ kana, onPractice }: { kana: Kana; onPractice: () => void }
             <dd>{kana.sounds}</dd>
           </div>
           <div className="wide">
-            <dt>First word</dt>
+            <dt>Example word</dt>
             <dd>
               <span className="word" lang="ja">
                 {kana.word.kana}
@@ -136,7 +239,7 @@ interface PracticeProps {
   kana: Kana;
   next: Kana;
   onNext: () => void;
-  onWritten: (romaji: string) => void;
+  onWritten: (romaji: string, retries: number) => void;
   showTip: boolean;
   onDismissTip: () => void;
 }
@@ -148,10 +251,6 @@ function PracticePanel({ kana, next, onNext, onWritten, showTip, onDismissTip }:
   const [hintKey, setHintKey] = useState(0);
   const [round, setRound] = useState(0);
   const n = STROKES[kana.kana].length;
-
-  useEffect(() => {
-    if (phase === 'done') onWritten(kana.romaji);
-  }, [phase, kana.romaji, onWritten]);
 
   const restart = useCallback(() => {
     setPhase('trace');
@@ -174,6 +273,7 @@ function PracticePanel({ kana, next, onNext, onWritten, showTip, onDismissTip }:
 
   return (
     <div className="spread">
+      <PrintDetails kana={kana} />
       <div className="plate">
         <TracePad
           key={round}
@@ -182,6 +282,7 @@ function PracticePanel({ kana, next, onNext, onWritten, showTip, onDismissTip }:
           onPhaseChange={setPhase}
           onFeedback={setFeedback}
           onProgress={setProgress}
+          onWritten={(retries) => onWritten(kana.romaji, retries)}
           hintKey={hintKey}
         />
         {showTip && (
@@ -211,7 +312,7 @@ function PracticePanel({ kana, next, onNext, onWritten, showTip, onDismissTip }:
           )}
         </div>
       </div>
-      <div className="info">
+      <div className="info practice-info">
         <ol className="steps">
           {steps.map(([id, label], j) => (
             <li key={id} className={id === phase ? 'on' : j < order.indexOf(phase) ? 'ok' : ''}>
@@ -220,11 +321,6 @@ function PracticePanel({ kana, next, onNext, onWritten, showTip, onDismissTip }:
           ))}
         </ol>
         <h2>{prompt}</h2>
-        <div className="pips" aria-hidden="true">
-          {Array.from({ length: n }, (_, j) => (
-            <span key={j} className={phase === 'done' || j < progress ? 'ok' : j === progress ? 'now' : ''} />
-          ))}
-        </div>
         <p className="feedback" aria-live="polite">
           {feedback}
           {phase === 'done' && (

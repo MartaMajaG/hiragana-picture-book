@@ -34,14 +34,8 @@ export function fish(d: string, o: FishOpts): string {
   }
   return out.join('');
 }
-export function flower(x: number,y: number,r: number,rot=0,petal='#F4A9BC',mid='#C8456A'){
-  let s=`<g transform="translate(${r2(x)} ${r2(y)}) rotate(${rot})">`;
-  for(let i=0;i<5;i++){const a=i*72*Math.PI/180;s+=`<circle cx="${r2(Math.cos(a)*r*.58)}" cy="${r2(Math.sin(a)*r*.58)}" r="${r2(r*.52)}" fill="${petal}"/>`;}
-  s+=`<circle r="${r2(r*.32)}" fill="#FBE7A1"/><circle r="${r2(r*.16)}" fill="${mid}"/>`;
-  return s+'</g>';
-}
-export function star(x: number,y: number,s: number,c='#FFE3A3'){return `<path d="M${x},${y-s} Q${x+s*.18},${y-s*.18} ${x+s},${y} Q${x+s*.18},${y+s*.18} ${x},${y+s} Q${x-s*.18},${y+s*.18} ${x-s},${y} Q${x-s*.18},${y-s*.18} ${x},${y-s}Z" fill="${c}"/>`;}
 export function note(x: number,y: number,c: string){return `<g transform="translate(${x} ${y})" fill="${c}" stroke="${c}"><ellipse cx="0" cy="8" rx="3.1" ry="2.3" transform="rotate(-22 0 8)" stroke="none"/><path d="M2.7,7.4 V-3.5 Q6,-2 7.5,1.5" fill="none" stroke-width="1.1" stroke-linecap="round"/></g>`;}
 export function bubbles(list: [number,number,number][]){return list.map(([x,y,r])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="#CFEAF3" fill-opacity=".35" stroke="#7FBBD2" stroke-width=".6"/><circle cx="${x-r*.35}" cy="${y-r*.35}" r="${r*.25}" fill="#fff" opacity=".8"/>`).join('');}
-export const water=`<path d="M-8,96 q7,-3.5 14,0 t14,0 t14,0 t14,0 t14,0 t14,0 t14,0 t14,0 t14,0" fill="none" stroke="#7FB3CC" stroke-width="1" opacity=".55"/><path d="M-4,104 q7,-3 14,0 t14,0 t14,0 t14,0 t14,0 t14,0 t14,0 t14,0" fill="none" stroke="#7FB3CC" stroke-width="1" opacity=".4"/>`;
 
+/** Soft ground shadow under a grounded object, shared so every picture sits the same way. */
+export const shadow=(cx: number,cy: number,rx: number)=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${r2(rx*.11)}" fill="#2A2530" opacity=".12"/>`;

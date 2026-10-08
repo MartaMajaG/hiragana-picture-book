@@ -1,12 +1,31 @@
-// か (ka) illustration. Parts are layered back to front and bloom in one by one.
+// か (ka) illustration: a cat mid-stretch. Ka as in cat.
+// The slash is its back sloping down to the outstretched front paws, stroke 1 is the raised rump and hind leg,
+// and the short third stroke is its tail held high.
+// Parts are layered back to front and bloom in one by one.
 import type { Draw } from './types';
+import { shadow } from './helpers';
 
-const draw: Draw = S=>[
-  `<ellipse cx="46" cy="31" rx="17" ry="7.5" transform="rotate(-16 46 31)" fill="#D4EBF4" fill-opacity=".75" stroke="#8FBBD0" stroke-width=".7"/><ellipse cx="58" cy="46" rx="15" ry="6.5" transform="rotate(30 58 46)" fill="#D4EBF4" fill-opacity=".65" stroke="#8FBBD0" stroke-width=".7"/><path d="M40,33 L58,26 M44,35 L60,33 M52,42 L66,52 M53,46 L63,56" stroke="#8FBBD0" stroke-width=".5"/>`,
-  `<g fill="none" stroke="#3B3F4A" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"><path d="M43,33 L30,24 L18,30"/><path d="M42,36 L30,40 L22,54"/><path d="M45,37 L56,54 L55,68"/><path d="M40,40 L34,58 L38,74"/><path d="M47,34 L64,30 L78,20"/><path d="M44,38 L50,62 L46,80"/></g>`,
-  `<path d="${S[1]}" fill="none" stroke="#3B3F4A" stroke-width="5.2" stroke-linecap="round"/><path d="${S[1]}" fill="none" stroke="#EDE7D6" stroke-width="5.2" stroke-dasharray="2.6 4.2" stroke-dashoffset="-14"/>`,
-  `<ellipse cx="46" cy="27" rx="4.4" ry="6.8" transform="rotate(24 46 27)" fill="#3B3F4A"/><circle cx="50" cy="17.5" r="4.4" fill="#3B3F4A"/><circle cx="51.5" cy="16.5" r="1.8" fill="#C0473F"/><path d="M53,14 L63,3" stroke="#3B3F4A" stroke-width="1" stroke-linecap="round"/><path d="M51,14 Q52,7 57,5 M49,14 Q46,7 49,3" fill="none" stroke="#3B3F4A" stroke-width=".6"/>`,
-  `<g fill="none" stroke="hsl(190 55% 45%)" stroke-width="1.3" stroke-linecap="round" opacity=".8"><path d="M86,33 q6,7 3,16"/><path d="M92,28 q8,10 4,22"/><path d="M98,23 q10,13 5,29"/></g>`
- ];
+const FUR = '#E8913A', SHADE = '#C46F27', CREAM = '#F8E6C8', INK = '#2E2A22';
+
+const draw: Draw = () => [
+  shadow(46, 88, 38),
+  // tail up and curling over, along the third stroke
+  `<path d="M62,34 C65,25 76,22 83,29 C88,34 91,44 90,53" fill="none" stroke="${FUR}" stroke-width="6" stroke-linecap="round"/>` +
+    `<path d="M85,32 C88,37 90,44 90,51" fill="none" stroke="${SHADE}" stroke-width="6" stroke-linecap="round"/>`,
+  // front legs stretched out along the ground
+  `<path d="M36,71 C29,77 21,81 13,83" fill="none" stroke="${SHADE}" stroke-width="5.5" stroke-linecap="round"/>` +
+    `<path d="M39,74 C31,80 23,84 15,86" fill="none" stroke="${FUR}" stroke-width="5.5" stroke-linecap="round"/>` +
+    `<ellipse cx="13" cy="86.3" rx="3.6" ry="2.2" fill="${CREAM}"/>`,
+  // body: rump high, back sloping down to the shoulders, hind leg planted
+  `<path d="M56,28 C62,27 68,33 68,42 C68,52 66,62 66,72 C66,78 66,82 65.5,85 L55.5,85 C55,83 56.5,82 59,82 C59,76 58.5,68 57,61 C51,62 44,68 39,74 C35,75 31,71 31,65 C34,58 46,31 56,28Z" fill="${FUR}"/>` +
+    `<path d="M63,31 C67,35 68,40 68,46 C67.5,56 66,64 66,72 C66,78 66,82 65.5,85 L62,85 C63.5,72 65,50 63,31Z" fill="${SHADE}"/>`,
+  // head low between the shoulders, eyes shut mid-stretch
+  `<path d="M19.5,58 L14,47.5 L27,54Z M30,54 L34,44 L37.5,57Z" fill="${FUR}"/><path d="M20,55 L17.5,50.5 L23.5,54Z M32,53.5 L33.8,48.5 L35.5,55Z" fill="#F2A7A0"/>` +
+    `<circle cx="27.5" cy="63.5" r="10.5" fill="${FUR}"/>` +
+    `<path d="M20.5,62.5 Q22.5,64.5 24.5,62.5 M29.5,62.5 Q31.5,64.5 33.5,62.5" fill="none" stroke="${INK}" stroke-width="1" stroke-linecap="round"/>` +
+    `<path d="M25.8,66.5 L29.2,66.5 L27.5,68.3Z" fill="#D9606E"/><path d="M27.5,68.3 Q26,70.3 24.5,69.3 M27.5,68.3 Q29,70.3 30.5,69.3" fill="none" stroke="${INK}" stroke-width=".6" stroke-linecap="round"/>`,
+  // highlight along the back
+  `<path d="M40,46 C45,37 50,31.5 55.5,30" fill="none" stroke="#FFF4EE" stroke-width="1.4" stroke-linecap="round"/>`,
+];
 
 export default draw;

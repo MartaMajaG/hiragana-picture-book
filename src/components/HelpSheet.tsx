@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-export type HelpTopic = 'learn' | 'practice' | 'review';
+export type HelpTopic = 'learn' | 'practice' | 'review' | 'stickers';
 
 const CONTENT: Record<HelpTopic, { title: string; items: [string, string][] }> = {
   learn: {
-    title: 'Learning a character',
+    title: 'How learning works',
     items: [
       ['Watch it being written', 'Each stroke draws in the order you should write it. Replay it any time.'],
       ['Picture or strokes', 'Picture shows the mnemonic drawing. Strokes hides it and numbers each stroke.'],
@@ -12,7 +12,7 @@ const CONTENT: Record<HelpTopic, { title: string; items: [string, string][] }> =
     ],
   },
   practice: {
-    title: 'Writing practice',
+    title: 'How writing practice works',
     items: [
       ['Press and drag to write', 'Start each stroke at the pulsing dot and lift when the stroke ends.'],
       ['On a Mac trackpad', 'Turn on three-finger drag (System Settings › Accessibility › Pointer Control › Trackpad Options). It feels closest to a pen.'],
@@ -20,12 +20,20 @@ const CONTENT: Record<HelpTopic, { title: string; items: [string, string][] }> =
       ['Order, direction and shape', 'If a stroke is out of order, backwards or off, the correct one is shown so you can try again.'],
     ],
   },
-  review: {
-    title: 'Review',
+  stickers: {
+    title: 'How stickers work',
     items: [
-      ['Everything, shuffled', 'Questions mix all the characters that have lessons.'],
-      ['Two kinds of question', 'Read a character, or find the character for a sound.'],
-      ['Focus on the hard ones', 'Characters you miss come up more often.'],
+      ['Earn mon', 'Mon (文) are old Japanese coins. You get them for opening lessons, writing from memory (extra for no slips) and right answers in review, with a bonus while a run keeps going.'],
+      ['Keep a daily streak', 'Practise a little every day. The 日 count in the top bar shows how many days in a row.'],
+      ['Collect stickers', 'Each sticker is something from Japanese culture. Hover or tap one in the album to read about it. One is a secret.'],
+    ],
+  },
+  review: {
+    title: 'How review works',
+    items: [
+      ['Choose what to practise', 'Above the quiz, pick the kind of question and which rows of the chart to include.'],
+      ['Two kinds of question', 'Read the character shown, or find the character for a sound.'],
+      ['Focus on the hard ones', 'Characters you miss come up more often until you get them right.'],
     ],
   },
 };
@@ -61,14 +69,18 @@ export default function HelpSheet({ topic, onClose }: Props) {
             ×
           </button>
         </div>
-        <dl>
+        <ol className="notes">
           {c.items.map(([t, d]) => (
-            <div key={t}>
-              <dt>{t}</dt>
-              <dd>{d}</dd>
-            </div>
+            <li key={t}>
+              <b>{t}.</b> {d}
+            </li>
           ))}
-        </dl>
+        </ol>
+        <div className="sheet-f">
+          <button type="button" className="btn primary" onClick={onClose}>
+            Got it
+          </button>
+        </div>
       </div>
     </div>
   );

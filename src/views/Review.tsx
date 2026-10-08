@@ -1,9 +1,29 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import KanaStage from '../components/KanaStage';
-import { KANA, type Kana } from '../data/kana';
+import { CHART, KANA, type Kana } from '../data/kana';
 import type { Progress } from '../lib/progress';
 
 type Format = 'read' | 'find';
+
+/** What to practise: which kind of question, and which rows of the chart. */
+interface Settings {
+  format: Format | 'mix';
+  row: string; // 'all' or a row's first kana, e.g. 'か'
+}
+// ん has a row of its own in the chart, but on its own it isn't a quiz, so it joins the わ row here.
+const ROWS = CHART.map((r) => r[0][0]).filter((r) => r !== 'ん');
+const SETTINGS_KEY = 'hiragana-review-settings';
+function loadSettings(): Settings {
+  try {
+    const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) ?? '');
+    if (s && ['read', 'find', 'mix'].includes(s.format) && (s.row === 'all' || ROWS.includes(s.row))) return s;
+  } catch {
+    /* no saved settings */
+  }
+  return { format: 'mix', row: 'all' };
+}
+const poolFor = (row: string) =>
+  row === 'all' ? KANA : KANA.filter((k) => k.row === row || (row === 'わ' && k.row === 'ん'));
 interface Question {
   kana: Kana;
   format: Format;
@@ -18,8 +38,8 @@ interface Props {
 const shuffle = <T,>(a: T[]) => a.map((x) => [Math.random(), x] as const).sort((p, q) => p[0] - q[0]).map((p) => p[1]);
 
 /** Pick a character, weighted towards the ones missed more often. */
-function pick(stats: Props['stats'], last?: string): Kana {
-  const pool = KANA.filter((k) => k.romaji !== last);
+function pick(stats: Props['stats'], from: Kana[], last?: string): Kana {
+  const pool = from.length > 1 ? from.filter((k) => k.romaji !== last) : from;
   const weights = pool.map((k) => {
     const s = stats[k.romaji] ?? { right: 0, wrong: 0 };
     return (1 + s.wrong * 2) / (1 + s.right * 0.5);
@@ -32,21 +52,38 @@ function pick(stats: Props['stats'], last?: string): Kana {
   return pool[pool.length - 1];
 }
 
-function makeQuestion(stats: Props['stats'], last?: string): Question {
-  const kana = pick(stats, last);
-  const others = shuffle(KANA.filter((k) => k !== kana)).slice(0, 3);
-  return { kana, format: Math.random() < 0.5 ? 'read' : 'find', options: shuffle([...others, kana]) };
+function makeQuestion(stats: Props['stats'], settings: Settings, last?: string): Question {
+  const pool = poolFor(settings.row);
+  const kana = pick(stats, pool, last);
+  // Wrong answers come from the same row when it has enough characters, so the choice stays a real test.
+  const near = pool.length >= 4 ? pool : KANA;
+  const others = shuffle(near.filter((k) => k !== kana)).slice(0, 3);
+  const format = settings.format === 'mix' ? (Math.random() < 0.5 ? 'read' : 'find') : settings.format;
+  return { kana, format, options: shuffle([...others, kana]) };
 }
 
 export default function Review({ stats, onResult }: Props) {
-  const [q, setQ] = useState<Question>(() => makeQuestion(stats));
+  const [settings, setSettings] = useState<Settings>(loadSettings);
+  const [q, setQ] = useState<Question>(() => makeQuestion(stats, settings));
   const [answer, setAnswer] = useState<Kana | null>(null);
   const [tally, setTally] = useState({ right: 0, asked: 0, streak: 0 });
 
   const nextQ = useCallback(() => {
     setAnswer(null);
-    setQ((prev) => makeQuestion(stats, prev.kana.romaji));
-  }, [stats]);
+    setQ((prev) => makeQuestion(stats, settings, prev.kana.romaji));
+  }, [stats, settings]);
+
+  const changeSettings = (patch: Partial<Settings>) => {
+    const next = { ...settings, ...patch };
+    setSettings(next);
+    try {
+      localStorage.setItem(SETTINGS_KEY, JSON.stringify(next));
+    } catch {
+      /* storage unavailable: settings last for this visit */
+    }
+    setAnswer(null);
+    setQ(makeQuestion(stats, next));
+  };
 
   const choose = (k: Kana) => {
     if (answer) return;
@@ -75,7 +112,10 @@ export default function Review({ stats, onResult }: Props) {
       <div className="review-bar">
         <div>
           <h1 id="review-h">Review</h1>
-          <p>All {KANA.length} characters, shuffled. The ones you miss come back more often.</p>
+          <p>
+            {settings.row === 'all' ? `All ${KANA.length} characters` : `The ${settings.row} row`}, shuffled. The ones you miss
+            come back more often.
+          </p>
         </div>
         <div className="tally">
           <span>
@@ -85,6 +125,33 @@ export default function Review({ stats, onResult }: Props) {
             Correct <b>{tally.right}</b> of <b>{tally.asked}</b>
           </span>
         </div>
+      </div>
+
+      <div className="review-settings">
+        <div className="seg" role="group" aria-label="Kind of question">
+          {(
+            [
+              ['mix', 'Mixed'],
+              ['read', 'Read the character'],
+              ['find', 'Find the character'],
+            ] as const
+          ).map(([f, label]) => (
+            <button key={f} type="button" aria-pressed={settings.format === f} onClick={() => changeSettings({ format: f })}>
+              {label}
+            </button>
+          ))}
+        </div>
+        <label className="row-pick">
+          <span>Rows</span>
+          <select value={settings.row} onChange={(e) => changeSettings({ row: e.target.value })}>
+            <option value="all">All rows</option>
+            {ROWS.map((r) => (
+              <option key={r} value={r}>
+                {r === 'わ' ? 'わ row and ん' : `${r} row`}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
 
       <div className="spread">

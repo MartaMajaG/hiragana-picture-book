@@ -1,13 +1,24 @@
-// う (u) illustration. Parts are layered back to front and bloom in one by one.
+// う (u) illustration: a little ghost going "ooooo".
+// The long curve is the ghost's head and wispy tail, the short stroke on top is its wail.
+// Parts are layered back to front and bloom in one by one.
 import type { Draw } from './types';
+import { shadow } from './helpers';
 
-const draw: Draw = S=>[
-  `<circle cx="94" cy="16" r="10" fill="#F6B55E"/><circle cx="94" cy="16" r="16" fill="#F6B55E" opacity=".2"/>`,
-  `<path d="M44,117 C56,86 80,66 100,68 C112,69 118,76 118,84 L118,117Z" fill="#8FC7DA" opacity=".75"/>`,
-  `<path d="M33,42.38c2.12,1.12,4.12,2.88,8.5,1.38c4.38-1.5,12.75-7.12,18.5-7c5.75,0.12,10.25,5,10.25,18c0,15.49-8.25,30.24-24.37,41.24 L30,117 L-8,117 L-8,64 C6,50 20,40 33,42.38Z" fill="url(#gSea)"/><path d="M36,50 C46,50 55,44 60,46 C66,48 64,62 58,74" fill="none" stroke="#8DD0E6" stroke-width="1.6" opacity=".7" stroke-linecap="round"/><path d="M-4,84 C8,78 18,82 30,76" fill="none" stroke="#8DD0E6" stroke-width="1.2" opacity=".5" stroke-linecap="round"/>`,
-  `<g fill="#fff"><circle cx="35" cy="41" r="3.4"/><circle cx="42" cy="40.5" r="3.8"/><circle cx="49.5" cy="38.2" r="3.4"/><circle cx="56.5" cy="35.4" r="3.8"/><circle cx="63.5" cy="36" r="3.3"/><circle cx="69" cy="41" r="3"/><circle cx="71.4" cy="47.5" r="2.4"/><circle cx="27" cy="44" r="2.6"/><circle cx="76" cy="40" r="1.4"/><circle cx="79" cy="45" r="1"/></g>`,
-  `<path d="M53,5 C60,13 66,18.5 64,24 C62,29.5 45,29.5 43,24 C41,18.5 46,12 53,5Z" fill="#A8DCEC"/><ellipse cx="48" cy="20" rx="1.6" ry="2.8" transform="rotate(20 48 20)" fill="#fff" opacity=".85"/>`,
-  `<circle cx="30" cy="12" r="1.3" fill="#A8DCEC"/><circle cx="72" cy="10" r="1.6" fill="#A8DCEC"/><circle cx="24" cy="24" r="1" fill="#A8DCEC"/>`
- ];
+const SHEET = '#F3F1FA', SHADE = '#D5D0E8', INK = '#2E2A38';
+
+const draw: Draw = () => [
+  shadow(56, 104, 18),
+  // the wail, drawn along the first stroke
+  `<path d="M42,17 q3.5,-3 7,0 t7,0 t6.5,0" fill="none" stroke="#9C92C4" stroke-width="2" stroke-linecap="round"/>`,
+  // ghost body: round head top right, arm reaching left, tail sweeping down to the bottom left
+  `<path d="M57,35 C71,35 77,47 75,60 C73,74 63,84 53,92 C50,94.5 47,97.5 45,99 C43,94 44,90 40,86 C36,82 37,75 39,68 C40.5,63 40,57 41,52 C37,50.5 33,49 31,46.5 C29.5,44.3 32,41.8 35,42.6 C38.5,43.6 41,44 43,43 C46,38 51,35 57,35Z" fill="${SHEET}"/>` +
+    `<path d="M66,38 C74,42 77,51 75,60 C73,74 63,84 53,92 C50,94.5 47,97.5 45,99 C59,86 70,72 66,38Z" fill="${SHADE}"/>`,
+  // face with an "oo" mouth
+  `<ellipse cx="54" cy="52" rx="2.1" ry="3" fill="${INK}"/><ellipse cx="63" cy="51" rx="2.1" ry="3" fill="${INK}"/>` +
+    `<circle cx="53.4" cy="51" r=".7" fill="#fff"/><circle cx="62.4" cy="50" r=".7" fill="#fff"/>` +
+    `<ellipse cx="58.8" cy="61" rx="3" ry="3.8" fill="${INK}"/>`,
+  // highlight
+  `<path d="M49.5,44 C51,40.5 54,38.8 57.5,38.6" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>`,
+];
 
 export default draw;

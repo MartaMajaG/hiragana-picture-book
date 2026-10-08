@@ -11,6 +11,8 @@ interface Props {
   onPhaseChange: (p: TracePhase) => void;
   onFeedback: (text: string) => void;
   onProgress: (strokeIndex: number) => void;
+  /** Called once the character is written from memory, with the number of retries it took. */
+  onWritten: (retries: number) => void;
   /** Increment to replay the hint for the current stroke ("Show me"). */
   hintKey: number;
 }
@@ -21,7 +23,7 @@ const PRAISE = ['Good.', 'Nice.', 'Clean stroke.', 'Yes.'];
  * A writing pad for one kana. The learner draws each stroke with a pointer (mouse, trackpad, finger or pen).
  * Each attempt is checked against the reference stroke for order, direction and shape.
  */
-export default function TracePad({ kana, phase, onPhaseChange, onFeedback, onProgress, hintKey }: Props) {
+export default function TracePad({ kana, phase, onPhaseChange, onFeedback, onProgress, onWritten, hintKey }: Props) {
   const strokes = STROKES[kana.kana];
   const art = useMemo(() => illustrationMarkup(kana), [kana]);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -81,6 +83,7 @@ export default function TracePad({ kana, phase, onPhaseChange, onFeedback, onPro
           miss === 0 ? 'Written from memory with no slips.' : `Written from memory, with ${miss} ${miss === 1 ? 'retry' : 'retries'}.`,
         );
         onPhaseChange('done');
+        onWritten(miss);
       }
       return;
     }
@@ -145,7 +148,7 @@ export default function TracePad({ kana, phase, onPhaseChange, onFeedback, onPro
       onPointerUp={onUp}
       onPointerCancel={onCancel}
     >
-      <circle cx="54.5" cy="56" r="52" fill={halo(kana.hue, 0.12)} />
+      <circle cx="54.5" cy="56" r="52" style={{ fill: halo(kana.hue) }} opacity={0.55} />
       <g dangerouslySetInnerHTML={{ __html: art }} />
       <path className="grid" d="M54.5,2 V107 M2,54.5 H107" />
       <rect className="grid" x="2" y="2" width="105" height="105" rx="4" />

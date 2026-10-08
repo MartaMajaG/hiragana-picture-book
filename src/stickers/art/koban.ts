@@ -1,0 +1,9 @@
+// Sticker: a gold koban coin, upright oval with hammered lines and a stamped mark.
+export default `<ellipse cx="50" cy="50" rx="30" ry="41" fill="#F2C14E"/>
+<path d="M66,15.5 C76,23 80,36 80,50 C80,73 66.6,91 50,91 C40,91 31,86 25.6,78 C32,84 40,87 48,87 C63,87 75,71 75,50 C75,36 71.6,24 66,15.5Z" fill="#D19A2A"/>
+<ellipse cx="50" cy="50" rx="23" ry="35" fill="none" stroke="#E0A93A" stroke-width="2.4"/>
+<rect x="40.1" y="21.3" width="19.8" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="36.1" y="26.9" width="27.8" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="33.6" y="32.5" width="32.7" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="32.1" y="38.1" width="7.9" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="60" y="38.1" width="7.9" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="31.2" y="43.7" width="8.8" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="60" y="43.7" width="8.8" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="31" y="49.3" width="9" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="60" y="49.3" width="9" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="31.4" y="54.9" width="8.6" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="60" y="54.9" width="8.6" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="32.4" y="60.5" width="7.6" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="60" y="60.5" width="7.6" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="34.1" y="66.1" width="31.8" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="36.8" y="71.7" width="26.4" height="2.6" rx="1.3" fill="#E0A93A"/><rect x="41.3" y="77.3" width="17.5" height="2.6" rx="1.3" fill="#E0A93A"/>
+<rect x="42" y="38" width="16" height="24" rx="2.4" fill="#C08A22"/>
+<rect x="44.6" y="40.6" width="10.8" height="18.8" rx="1.4" fill="#F5CF68"/>
+<path d="M28,36 C30,26 36,17.5 44,13.6" fill="none" stroke="#FFF4EE" stroke-width="2.2" stroke-linecap="round"/>
+<path d="M25.4,45 L25.6,41" fill="none" stroke="#FFF4EE" stroke-width="2.2" stroke-linecap="round"/>`;

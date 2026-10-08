@@ -51,8 +51,14 @@ export default function KanaStage({ kana, picture, numbers = false, replayKey = 
       role="img"
       aria-label={label ?? `${kana.kana}, read ${kana.romaji}. ${kana.title}.`}
     >
-      <circle cx="54.5" cy="56" r="52" fill={halo(kana.hue)} />
+      <circle cx="54.5" cy="56" r="52" style={{ fill: halo(kana.hue) }} />
       <g dangerouslySetInnerHTML={{ __html: art }} />
+      {/* a thin rim of paper under the ink, so the character stays crisp over the picture */}
+      <g className="ink-halo">
+        {strokes.map((d, i) => (
+          <path key={i} d={d} />
+        ))}
+      </g>
       <g className="ink">
         {strokes.map((d, i) => (
           <path

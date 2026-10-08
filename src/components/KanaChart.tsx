@@ -11,10 +11,10 @@ export default function KanaChart({ current, written, onPick }: Props) {
   return (
     <section className="chart-sec" aria-labelledby="chart-h">
       <div className="sec-h">
-        <h2 id="chart-h">All characters</h2>
-        <span>
-          {KANA.length} of 46 ready · read right to left, like the printed chart
-        </span>
+        <h2 id="chart-h">
+          <span lang="ja">目次</span> All characters
+        </h2>
+        <span>Read right to left, top to bottom, like the printed chart</span>
       </div>
       <div className="chart-scroll">
         <div className="chart">
