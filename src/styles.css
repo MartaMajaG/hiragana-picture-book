@@ -984,6 +984,63 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
 }
 .sticker-art .sheen { mix-blend-mode: screen; opacity: 0.75; pointer-events: none; }
 .slot.earned:hover .sticker-art, .slot.earned:focus .sticker-art { scale: none; }
+/* ---------- the book as an object ----------
+   Modelled on a real woodblock-printed book lying open: two pages that bow and curve down into a deep, narrow fold,
+   the stacked page block showing along the outer edges, ivory paper that yellows towards its edges, and a frame
+   (kyōkaku) printed as a confident sumi-black rule with a thin rule inside. Each page is its own layer, so the spread
+   is never one flat rectangle. */
+:root {
+  --page: #efe5cb;
+  --page-left: polygon(0% 1.6%, 12% 0.9%, 30% 0.35%, 50% 0.2%, 68% 0.5%, 82% 1.2%, 92% 2.2%, 97% 3.2%, 100% 4.4%, 100% 97.6%, 96% 98.6%, 86% 99.3%, 66% 99.75%, 40% 99.85%, 16% 99.6%, 0% 99%);
+  --page-right: polygon(0% 4.4%, 3% 3.2%, 8% 2.2%, 18% 1.2%, 32% 0.5%, 50% 0.2%, 70% 0.35%, 88% 0.9%, 100% 1.6%, 100% 99%, 84% 99.6%, 60% 99.85%, 34% 99.75%, 14% 99.3%, 4% 98.6%, 0% 97.6%);
+  --ink-frame: #34291f;
+}
+.spread {
+  background: none; box-shadow: none; border-radius: 0; isolation: isolate;
+  filter: drop-shadow(0 28px 26px rgba(0, 0, 0, 0.45)) drop-shadow(0 4px 4px rgba(0, 0, 0, 0.25));
+}
+.spread::before, .spread::after { content: ''; position: absolute; top: 0; bottom: 0; z-index: -1; }
+.spread::before {
+  left: 0; right: 50%; clip-path: var(--page-left);
+  background:
+    linear-gradient(270deg, rgba(48, 30, 10, 0.42) 0, rgba(80, 52, 22, 0.16) 18px, rgba(120, 85, 40, 0.06) 60px, transparent 110px),
+    repeating-linear-gradient(90deg, rgba(140, 110, 70, 0.55) 0 1px, rgba(245, 236, 212, 0.9) 1px 3px) 0 0 / 9px 100% no-repeat,
+    linear-gradient(90deg, rgba(120, 85, 40, 0.22) 9px, rgba(150, 110, 60, 0.08) 22px, transparent 60px),
+    radial-gradient(ellipse 70% 60% at 55% 42%, rgba(255, 251, 238, 0.55), transparent 70%),
+    linear-gradient(180deg, rgba(160, 120, 60, 0.12), transparent 12%, transparent 90%, rgba(160, 120, 60, 0.14)),
+    radial-gradient(circle at 14% 86%, rgba(150, 100, 40, 0.12) 0 4px, transparent 8px),
+    radial-gradient(circle at 38% 7%, rgba(150, 100, 40, 0.08) 0 2px, transparent 5px),
+    var(--washi), var(--page);
+}
+.spread::after {
+  left: 50%; right: 0; clip-path: var(--page-right);
+  background:
+    linear-gradient(90deg, rgba(48, 30, 10, 0.42) 0, rgba(80, 52, 22, 0.16) 18px, rgba(120, 85, 40, 0.06) 60px, transparent 110px),
+    repeating-linear-gradient(270deg, rgba(140, 110, 70, 0.55) 0 1px, rgba(245, 236, 212, 0.9) 1px 3px) 100% 0 / 9px 100% no-repeat,
+    linear-gradient(270deg, rgba(120, 85, 40, 0.22) 9px, rgba(150, 110, 60, 0.08) 22px, transparent 60px),
+    radial-gradient(ellipse 70% 60% at 45% 42%, rgba(255, 251, 238, 0.55), transparent 70%),
+    linear-gradient(180deg, rgba(160, 120, 60, 0.12), transparent 12%, transparent 90%, rgba(160, 120, 60, 0.14)),
+    radial-gradient(circle at 70% 93%, rgba(150, 100, 40, 0.1) 0 5px, transparent 10px),
+    radial-gradient(circle at 92% 12%, rgba(150, 100, 40, 0.09) 0 3px, transparent 6px),
+    var(--washi), var(--page);
+}
+@media (max-width: 820px) {
+  .spread { background: none; }
+  .spread::before {
+    right: 0; clip-path: none; border-radius: 3px;
+    background: radial-gradient(ellipse 80% 70% at 50% 40%, rgba(255, 251, 238, 0.5), transparent 70%),
+      linear-gradient(90deg, rgba(120, 85, 40, 0.18), transparent 30px, transparent calc(100% - 30px), rgba(120, 85, 40, 0.18)),
+      var(--washi), var(--page);
+  }
+  .spread::after { display: none; }
+}
+
+/* the printed frame: a bold sumi rule with a thin rule inside, inked by hand */
+.spread .plate::before, .spread .info::before {
+  border: 2.4px solid var(--ink-frame); opacity: 0.86; border-radius: 1px;
+  box-shadow: inset 0 0 0 4px transparent, inset 0 0 0 5.2px rgba(52, 41, 31, 0.75);
+}
+
 @media (prefers-reduced-motion: reduce) { .lift.on .sticker-art, .lift.pressed .sticker-art { transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {
