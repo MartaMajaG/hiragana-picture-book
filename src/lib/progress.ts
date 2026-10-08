@@ -15,6 +15,8 @@ export interface Progress {
   spent: number;
   /** Capsule-series stickers collected: id → how many. */
   capsules: Record<string, number>;
+  /** New capsule stickers still waiting to be stuck onto their page by hand. */
+  capsuleToStick: string[];
   /** Characters written from memory with no retries. */
   perfect: number;
   /** Review questions answered, and the current and best run of correct answers in a row. */
@@ -34,7 +36,7 @@ export interface Progress {
 
 const KEY = 'hiragana-picture-book/v1';
 const empty = (): Progress => ({
-  written: [], review: {}, tipsSeen: [], opened: [], mon: 0, spent: 0, capsules: {}, perfect: 0, answered: 0, run: 0, bestRun: 0,
+  written: [], review: {}, tipsSeen: [], opened: [], mon: 0, spent: 0, capsules: {}, capsuleToStick: [], perfect: 0, answered: 0, run: 0, bestRun: 0,
   days: { last: '', streak: 0, best: 0 }, late: false, early: false, stickers: {}, toStick: [],
 });
 

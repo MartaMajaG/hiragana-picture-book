@@ -63,6 +63,7 @@ export function pull(p: Progress, rand = Math.random): { next: Progress; capsule
       ...p,
       spent: p.spent + GACHA_COST - (isNew ? 0 : DUPLICATE_REFUND),
       capsules: { ...p.capsules, [capsule.id]: (p.capsules[capsule.id] ?? 0) + 1 },
+      capsuleToStick: isNew ? [...p.capsuleToStick, capsule.id] : p.capsuleToStick,
     },
   };
 }

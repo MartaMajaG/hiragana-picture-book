@@ -4,6 +4,7 @@ import { STICKER_GROUPS, STICKERS, type Sticker, type StickerGroup } from '../da
 import { currentStreak, type Progress } from '../lib/progress';
 import { KANA } from '../data/kana';
 import Gacha from '../components/Gacha';
+import Placement from '../components/Placement';
 import type { Capsule } from '../data/gacha';
 
 interface AlbumProps {
@@ -14,13 +15,14 @@ interface AlbumProps {
   onPlace: (id: string | null) => void;
   onPlaced: (id: string) => void;
   onPull: () => { capsule: Capsule; isNew: boolean } | null;
+  onCapsulePlaced: (id: string) => void;
   /** Which page of the sticker book is open: the album or the gachapon. */
   tab: 'album' | 'gacha';
   onTab: (t: 'album' | 'gacha') => void;
 }
 
 /** The sticker album: two pages of slots, filled in by hand as stickers are earned. */
-export default function Album({ progress, onOpenPurse, placing, onPlace, onPlaced, onPull, tab, onTab: setTab }: AlbumProps) {
+export default function Album({ progress, onOpenPurse, placing, onPlace, onPlaced, onPull, onCapsulePlaced, tab, onTab: setTab }: AlbumProps) {
   useEffect(() => {
     if (placing) setTab('album');
   }, [placing]);
@@ -94,12 +96,9 @@ export default function Album({ progress, onOpenPurse, placing, onPlace, onPlace
                   <span lang="ja">{s.jp}</span> {s.name}
                 </b>{' '}
                 {s.how}
-                <span className="bar" aria-hidden="true">
+                <span className="bar" role="img" aria-label={`${Math.min(g[0], g[1])} of ${g[1]}`}>
                   <span style={{ width: `${Math.min(100, (g[0] / g[1]) * 100)}%` }} />
                 </span>
-              </span>
-              <span className="nu-count">
-                {Math.min(g[0], g[1])}/{g[1]}
               </span>
             </li>
           ))}
@@ -117,7 +116,7 @@ export default function Album({ progress, onOpenPurse, placing, onPlace, onPlace
           </button>
         </div>
         {tab === 'gacha' ? (
-          <Gacha progress={progress} onPull={onPull} />
+          <Gacha progress={progress} onPull={onPull} onPlaced={onCapsulePlaced} />
         ) : (
           <div className="spread album-spread">
             {half.map((groups, i) => (
@@ -133,84 +132,13 @@ export default function Album({ progress, onOpenPurse, placing, onPlace, onPlace
           </div>
         )}
       </div>
-      {placing && <Placement id={placing} onCancel={() => onPlace(null)} onPlaced={onPlaced} />}
+      {placing && (() => {
+        const st = STICKERS.find((x) => x.id === placing);
+        return st ? (
+          <Placement id={st.id} jp={st.jp} name={st.name} target={`[data-slot="${st.id}"] .ghost`} onCancel={() => onPlace(null)} onPlaced={onPlaced} />
+        ) : null;
+      })()}
     </section>
-  );
-}
-
-/**
- * Sticking a sticker in by hand: it waits on its backing paper at the bottom of the screen; drag it onto the glowing
- * spot in the album and let go. Close enough and it snaps in and presses flat; otherwise it springs back.
- * A button does the same for keyboard and screen-reader users.
- */
-function Placement({ id, onCancel, onPlaced }: { id: string; onCancel: () => void; onPlaced: (id: string) => void }) {
-  const s = STICKERS.find((x) => x.id === id);
-  const home = useRef<HTMLDivElement>(null);
-  const [drag, setDrag] = useState<{ x: number; y: number } | null>(null);
-  const [snap, setSnap] = useState<{ x: number; y: number } | null>(null);
-  const start = useRef<{ x: number; y: number } | null>(null);
-
-  const target = () => document.querySelector<HTMLElement>(`[data-slot="${id}"] .ghost`);
-  // bring the waiting spot into view
-  useEffect(() => {
-    target()?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, [id]);
-
-  const finish = () => {
-    const t = target()?.getBoundingClientRect();
-    const h = home.current?.getBoundingClientRect();
-    if (t && h) setSnap({ x: t.left + t.width / 2 - (h.left + h.width / 2), y: t.top + t.height / 2 - (h.top + h.height / 2) });
-    window.setTimeout(() => onPlaced(id), 520);
-  };
-  const onDown = (e: React.PointerEvent<HTMLDivElement>) => {
-    e.currentTarget.setPointerCapture(e.pointerId);
-    start.current = { x: e.clientX, y: e.clientY };
-    setDrag({ x: 0, y: 0 });
-  };
-  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!start.current) return;
-    setDrag({ x: e.clientX - start.current.x, y: e.clientY - start.current.y });
-  };
-  const onUp = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!start.current) return;
-    start.current = null;
-    const t = target()?.getBoundingClientRect();
-    const near = t && Math.hypot(e.clientX - (t.left + t.width / 2), e.clientY - (t.top + t.height / 2)) < Math.max(70, t.width * 0.7);
-    if (near) finish();
-    else setDrag(null);
-  };
-  if (!s) return null;
-  const offset = snap ?? drag;
-  return (
-    <div className="placement" role="region" aria-label={`Stick ${s.name} into the album`}>
-      <div className="placement-card">
-        <div
-          ref={home}
-          className={`placement-sticker${drag ? ' dragging' : ''}${snap ? ' snapping' : ''}`}
-          style={offset ? { transform: `translate(${offset.x}px, ${offset.y}px)` } : undefined}
-          onPointerDown={snap ? undefined : onDown}
-          onPointerMove={onMove}
-          onPointerUp={onUp}
-          onPointerCancel={() => { start.current = null; setDrag(null); }}
-        >
-          <StickerArt id={s.id} size={120} shine={drag ? { x: 0.4, y: 0.3 } : null} />
-        </div>
-        <div className="placement-text">
-          <b>
-            <span lang="ja">{s.jp}</span> {s.name}
-          </b>
-          <span>Drag the sticker onto its glowing spot in the album.</span>
-          <span className="placement-actions">
-            <button type="button" className="btn small" onClick={finish} disabled={!!snap}>
-              Stick it here
-            </button>
-            <button type="button" className="btn small ghost" onClick={onCancel}>
-              Later
-            </button>
-          </span>
-        </div>
-      </div>
-    </div>
   );
 }
 

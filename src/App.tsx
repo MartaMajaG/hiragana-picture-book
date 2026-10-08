@@ -203,6 +203,7 @@ export default function App() {
             onOpenPurse={() => setPurse(true)}
             placing={placing}
             onPlace={setPlacing}
+            onCapsulePlaced={(id) => setProgress((p) => ({ ...p, capsuleToStick: p.capsuleToStick.filter((x) => x !== id) }))}
             onPull={() => {
               const r = pull(progress);
               if (!r) return null;
