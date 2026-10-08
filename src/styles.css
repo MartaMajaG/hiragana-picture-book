@@ -699,9 +699,11 @@ body { font-size: 17px; line-height: 1.65; }
 .brand { gap: 12px; }
 .brand .mark { border-radius: 3px; transform: rotate(-3deg); }
 .daisen {
-  display: flex; flex-direction: column; padding: 6px 16px 7px; background: var(--washi), var(--paper); color: #33281f;
-  border: 1px solid #bfa97f; outline: 1px solid rgba(239, 230, 214, 0.35); outline-offset: 3px; transform: rotate(-0.6deg);
-  box-shadow: 0 6px 14px -8px rgba(0, 0, 0, 0.6);
+  /* the double rule is printed inside the slip, as on a real daisen, so nothing sits outside the paper */
+  display: flex; flex-direction: column; padding: 9px 20px 10px; background: var(--washi), var(--paper); color: #33281f;
+  border: 0; outline: 0; transform: rotate(-0.6deg);
+  box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 5px rgba(120, 90, 50, 0.55), inset 0 0 0 7px var(--paper),
+    inset 0 0 0 8px rgba(120, 90, 50, 0.35), 0 6px 14px -8px rgba(0, 0, 0, 0.6);
 }
 .daisen small { font-family: var(--f-display); font-size: 11px; letter-spacing: 0.45em; color: #65533f; display: block; }
 .daisen b { font-family: var(--f-display); font-size: 18px; letter-spacing: 0.02em; line-height: 1.15; }
