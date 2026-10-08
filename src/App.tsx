@@ -7,6 +7,7 @@ import Review from './views/Review';
 import Album from './views/Album';
 import NewSticker from './components/NewSticker';
 import CoinPurse from './components/CoinPurse';
+import { balance, pull } from './data/gacha';
 import { KANA, kanaIndex } from './data/kana';
 import { STICKERS, newlyEarned } from './data/stickers';
 import { MON, currentStreak, loadProgress, saveProgress, touchDay, type Progress } from './lib/progress';
@@ -157,12 +158,12 @@ export default function App() {
         </nav>
         <button type="button" className="purse" onClick={() => setPurse(true)} title="Your purse: mon earned and days in a row">
           <span className="coin" lang="ja" aria-hidden="true">文</span>
-          <b>{progress.mon}</b>
+          <b>{balance(progress)}</b>
           <span className="sep" aria-hidden="true" />
           <b>{streak}</b>
           <span className="unit">{streak === 1 ? 'day' : 'days'}</span>
           <span className="sr-only">
-            {progress.mon} mon, {streak} day streak
+            {balance(progress)} mon to spend, {streak} day streak
           </span>
         </button>
         <button type="button" className="icon-btn help" aria-label="Help" aria-haspopup="dialog" onClick={() => setHelp(true)}>
@@ -199,6 +200,12 @@ export default function App() {
             onOpenPurse={() => setPurse(true)}
             placing={placing}
             onPlace={setPlacing}
+            onPull={() => {
+              const r = pull(progress);
+              if (!r) return null;
+              setProgress(r.next);
+              return { capsule: r.capsule, isNew: r.isNew };
+            }}
             onPlaced={(id) => {
               placeSticker(id);
               setPlacing(null);

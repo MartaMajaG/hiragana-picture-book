@@ -9,8 +9,12 @@ export interface Progress {
   tipsSeen: string[];
   /** Romaji of lessons opened at least once. */
   opened: string[];
-  /** Mon (文), points earned. Named after the Edo-period copper coin. */
+  /** Mon (文) earned in total. Named after the Edo-period copper coin. Treasure stickers count this. */
   mon: number;
+  /** Mon spent at the gachapon machine; what's left to spend is mon - spent. */
+  spent: number;
+  /** Capsule-series stickers collected: id → how many. */
+  capsules: Record<string, number>;
   /** Characters written from memory with no retries. */
   perfect: number;
   /** Review questions answered, and the current and best run of correct answers in a row. */
@@ -30,7 +34,7 @@ export interface Progress {
 
 const KEY = 'hiragana-picture-book/v1';
 const empty = (): Progress => ({
-  written: [], review: {}, tipsSeen: [], opened: [], mon: 0, perfect: 0, answered: 0, run: 0, bestRun: 0,
+  written: [], review: {}, tipsSeen: [], opened: [], mon: 0, spent: 0, capsules: {}, perfect: 0, answered: 0, run: 0, bestRun: 0,
   days: { last: '', streak: 0, best: 0 }, late: false, early: false, stickers: {}, toStick: [],
 });
 

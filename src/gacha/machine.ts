@@ -26,7 +26,7 @@ const DOME_CX = 100, DOME_CY = 94, DOME_R = 68;
 
 // [x, y, rotation, top colour, bottom colour], back row first
 const PILE: [number, number, number, string, string][] = [
-  [101, 64, 24, '#5BAE6A', '#F7F4EE'],
+  [100, 67, 24, '#5BAE6A', '#F7F4EE'],
   [64, 87, -18, '#4A86C5', '#F7F4EE'],
   [90, 85, 12, '#F2C14E', '#F7F4EE'],
   [116, 87, -26, '#E87FA0', '#F7F4EE'],

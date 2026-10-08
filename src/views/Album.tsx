@@ -3,6 +3,8 @@ import StickerArt, { tiltFor } from '../components/StickerArt';
 import { STICKER_GROUPS, STICKERS, type Sticker, type StickerGroup } from '../data/stickers';
 import { currentStreak, type Progress } from '../lib/progress';
 import { KANA } from '../data/kana';
+import Gacha from '../components/Gacha';
+import type { Capsule } from '../data/gacha';
 
 interface AlbumProps {
   progress: Progress;
@@ -11,10 +13,15 @@ interface AlbumProps {
   placing: string | null;
   onPlace: (id: string | null) => void;
   onPlaced: (id: string) => void;
+  onPull: () => { capsule: Capsule; isNew: boolean } | null;
 }
 
 /** The sticker album: two pages of slots, filled in by hand as stickers are earned. */
-export default function Album({ progress, onOpenPurse, placing, onPlace, onPlaced }: AlbumProps) {
+export default function Album({ progress, onOpenPurse, placing, onPlace, onPlaced, onPull }: AlbumProps) {
+  const [tab, setTab] = useState<'album' | 'gacha'>('album');
+  useEffect(() => {
+    if (placing) setTab('album');
+  }, [placing]);
   const earned = STICKERS.filter((s) => progress.stickers[s.id]).length;
   const streak = currentStreak(progress);
   // The nearest stickers still to earn, to give a reason to keep going.
@@ -98,18 +105,31 @@ export default function Album({ progress, onOpenPurse, placing, onPlace, onPlace
       )}
 
       <div className="book">
-        <div className="spread album-spread">
-          {half.map((groups, i) => (
-            <div className="album-page" key={i}>
-              {groups.map((g) => (
-                <Group key={g.title} group={g} progress={progress} placing={placing} onPlace={onPlace} />
-              ))}
-            </div>
-          ))}
-          <span className="folio l" lang="ja" aria-hidden="true">
-            帖
-          </span>
+        {/* index tabs: the album itself, and the gachapon machine */}
+        <div className="book-tabs" role="tablist" aria-label="Sticker book">
+          <button type="button" role="tab" className="tab learn" aria-selected={tab === 'album'} onClick={() => setTab('album')}>
+            <span lang="ja">帖</span>Album
+          </button>
+          <button type="button" role="tab" className="tab practice" aria-selected={tab === 'gacha'} onClick={() => setTab('gacha')}>
+            <span lang="ja">ガチャ</span>Gachapon
+          </button>
         </div>
+        {tab === 'gacha' ? (
+          <Gacha progress={progress} onPull={onPull} />
+        ) : (
+          <div className="spread album-spread">
+            {half.map((groups, i) => (
+              <div className="album-page" key={i}>
+                {groups.map((g) => (
+                  <Group key={g.title} group={g} progress={progress} placing={placing} onPlace={onPlace} />
+                ))}
+              </div>
+            ))}
+            <span className="folio l" lang="ja" aria-hidden="true">
+              帖
+            </span>
+          </div>
+        )}
       </div>
       {placing && <Placement id={placing} onCancel={() => onPlace(null)} onPlaced={onPlaced} />}
     </section>

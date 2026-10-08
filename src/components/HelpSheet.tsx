@@ -25,7 +25,8 @@ const CONTENT: Record<HelpTopic, { title: string; items: [string, string][] }> =
     items: [
       ['Earn mon', 'Mon (文) are old Japanese coins. You get them for opening lessons, writing from memory (extra for no slips) and right answers in review, with a bonus while a run keeps going.'],
       ['Keep a daily streak', 'Practise a little every day. The 日 count in the top bar shows how many days in a row.'],
-      ['Collect stickers', 'Each sticker is something from Japanese culture. Hover or tap one in the album to read about it. One is a secret.'],
+      ['Collect stickers', 'Each sticker is something from Japanese culture. When you earn one, drag it onto its glowing spot in the album. Hover or tap it to read about it. Two are secret.'],
+      ['Spend mon at the gachapon', 'Open the Gachapon tab in the sticker book: 30 mon turns the handle for a capsule with a sweets-and-snacks sticker. Duplicates give 5 mon back.'],
     ],
   },
   review: {

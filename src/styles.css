@@ -1138,6 +1138,50 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
 .placement-actions { display: flex; gap: 8px; margin-top: 6px; }
 .placement .btn.ghost { color: #65533f; background: none; border-color: transparent; }
 
+/* gachapon */
+.gacha-spread { align-items: start; }
+.gacha-spread h2 { font-family: var(--f-display); font-size: 30px; margin: 0; }
+.gacha-spread h2 [lang] { color: var(--shu); margin-right: 8px; font-size: 0.8em; }
+.gacha-intro { margin: 6px 0 14px; font-family: var(--hand); color: var(--muted); font-size: 15px; }
+.gacha-machine-page { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.machine { width: min(300px, 100%); height: auto; overflow: visible; }
+.machine-handle { transition: transform 0.9s cubic-bezier(0.45, 0.05, 0.3, 1); }
+.machine.turning .machine-capsules { animation: jiggle 0.9s ease-in-out; transform-box: view-box; transform-origin: 100px 120px; }
+@keyframes jiggle { 20% { transform: rotate(-3deg); } 45% { transform: rotate(3deg) translateY(2px); } 70% { transform: rotate(-2deg); } }
+.dropped-capsule { cursor: pointer; }
+.dropped-capsule:focus-visible { outline: none; }
+.dropped-capsule .bounce { animation: capdrop 0.7s cubic-bezier(0.3, 0.7, 0.4, 1.4) both; }
+.dropped-capsule:hover .bounce, .dropped-capsule:focus-visible .bounce { animation: wobble 0.6s ease-in-out infinite; }
+@keyframes capdrop { from { transform: translateY(-46px) scale(0.6); opacity: 0; } 60% { transform: translateY(6px) scale(1.05); opacity: 1; } }
+@keyframes wobble { 50% { transform: rotate(8deg) scale(1.05); } }
+.gacha-controls { display: flex; flex-direction: column; align-items: center; gap: 6px; margin-top: 10px; }
+.gacha-controls .btn.primary:disabled { opacity: 0.45; cursor: not-allowed; }
+.gacha-purse { margin: 4px 0 0; display: flex; align-items: center; gap: 8px; font-family: var(--hand); font-size: 15px; }
+.coin-dot { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 50%; background: #c79a4a; color: #2a1f12; font-size: 11px; font-weight: 800; box-shadow: inset 0 0 0 2px #e3bd73; }
+.gacha-small { margin: 0; font-family: var(--hand); font-size: 13px; color: var(--muted); }
+.capsule-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px 10px; }
+.capsule-slot { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; padding: 8px 4px 10px; }
+.capsule-ghost { width: 88px; height: 88px; display: grid; place-items: center; border-radius: 50%; outline: 1.5px dashed rgba(78, 52, 26, 0.3); outline-offset: 2px; font-family: var(--f-display); font-size: 40px; color: var(--muted); }
+.capsule-ghost .sticker-art { opacity: 0.2; filter: grayscale(1); }
+.capsule-slot .count { font-family: var(--hand); color: var(--muted); }
+.capsule-slot .rarity { font-family: var(--hand); font-size: 12px; color: #8f6a2c; }
+.capsule-slot.super .rarity { color: var(--shu); }
+.capsule-slot.have.super { background: radial-gradient(circle at 50% 40%, rgba(242, 200, 78, 0.35), transparent 65%); }
+.purse-small { font-family: var(--hand); font-size: 14px; color: var(--muted); margin: 4px 0; }
+/* the capsule opening */
+.cr-stage { position: relative; width: 230px; height: 210px; margin: 0 auto 6px; display: grid; place-items: center; }
+.cr-half { position: absolute; left: 55px; top: 45px; }
+.cr-half.top { animation: halftop 0.7s ease-out both; }
+.cr-half.bottom { animation: halfbottom 0.7s ease-out both; }
+@keyframes halftop { to { transform: translate(-70px, -40px) rotate(-40deg); opacity: 0.0; } }
+@keyframes halfbottom { to { transform: translate(70px, 50px) rotate(30deg); opacity: 0.0; } }
+.cr-art { animation: popup 0.8s 0.25s cubic-bezier(0.2, 0.9, 0.25, 1.4) both; }
+.cr-art.super { filter: drop-shadow(0 0 18px rgba(242, 200, 78, 0.9)); }
+@keyframes popup { from { opacity: 0; transform: scale(0.3) rotate(-20deg); } }
+.cr-rarity { margin: 0 0 6px; font-family: var(--hand); font-weight: 700; color: #8f6a2c; }
+.cr-rarity.super { color: var(--shu); }
+@media (max-width: 1000px) { .capsule-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
 @media (prefers-reduced-motion: reduce) { .lift.on .sticker-art, .lift.pressed .sticker-art { transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {

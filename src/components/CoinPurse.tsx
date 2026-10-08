@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { MON } from '../lib/progress';
 import { STICKERS } from '../data/stickers';
 import type { Progress } from '../lib/progress';
+import { balance } from '../data/gacha';
 
 /** One copper mon coin, face on: a square hole and the four characters of a Kan'ei Tsūhō (寛永通寳). */
 function Coin({ size = 46, tilt = 0 }: { size?: number; tilt?: number }) {
@@ -60,7 +61,8 @@ export default function CoinPurse({ progress, onClose }: { progress: Progress; o
     return () => window.removeEventListener('keydown', onKey);
   }, [onClose]);
 
-  const mon = progress.mon;
+  // the coins in the purse are what's left to spend; the treasure stickers count everything ever earned
+  const mon = balance(progress);
   const strings = Math.floor(mon / 100);
   const loose = mon % 100;
   const shownStrings = Math.min(strings, 10);
@@ -83,7 +85,7 @@ export default function CoinPurse({ progress, onClose }: { progress: Progress; o
         </div>
 
         <p className="purse-total">
-          <b>{mon}</b> mon
+          <b>{mon}</b> mon to spend
           {strings > 0 && (
             <span>
               {' '}
@@ -109,11 +111,19 @@ export default function CoinPurse({ progress, onClose }: { progress: Progress; o
           </span>
         </div>
 
+        {progress.spent > 0 && (
+          <p className="purse-small">
+            {progress.mon} earned in total, {progress.spent} spent at the gachapon.
+          </p>
+        )}
+
         <p className="purse-note">
           Mon (文) were the copper coins of Edo Japan, like this <span lang="ja">寛永通寳</span> Kan&apos;ei Tsūhō, minted for over
           two hundred years. The square hole let people thread them on a cord. A string of 96 coins was accepted as 100: the
           missing four paid whoever strung them.
         </p>
+
+        <p className="purse-small">Spend mon at the gachapon in the sticker book: {30} mon a capsule.</p>
 
         <h3>How to earn mon</h3>
         <ul className="earn-list">
@@ -126,7 +136,7 @@ export default function CoinPurse({ progress, onClose }: { progress: Progress; o
         </ul>
         {next && (
           <p className="purse-next">
-            Next treasure: <b lang="ja">{next.s.jp}</b> {next.s.name} at {next.need} mon, {Math.max(0, next.need - mon)} to go.
+            Next treasure: <b lang="ja">{next.s.jp}</b> {next.s.name} at {next.need} mon, {Math.max(0, next.need - progress.mon)} to go.
           </p>
         )}
       </div>
