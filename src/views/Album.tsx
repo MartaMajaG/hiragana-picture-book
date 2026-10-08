@@ -1,11 +1,20 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import StickerArt, { tiltFor } from '../components/StickerArt';
 import { STICKER_GROUPS, STICKERS, type Sticker, type StickerGroup } from '../data/stickers';
 import { currentStreak, type Progress } from '../lib/progress';
 import { KANA } from '../data/kana';
 
-/** The sticker album: two pages of slots, filled in as stickers are earned. */
-export default function Album({ progress, onOpenPurse }: { progress: Progress; onOpenPurse: () => void }) {
+interface AlbumProps {
+  progress: Progress;
+  onOpenPurse: () => void;
+  /** The sticker being stuck in right now, if any. */
+  placing: string | null;
+  onPlace: (id: string | null) => void;
+  onPlaced: (id: string) => void;
+}
+
+/** The sticker album: two pages of slots, filled in by hand as stickers are earned. */
+export default function Album({ progress, onOpenPurse, placing, onPlace, onPlaced }: AlbumProps) {
   const earned = STICKERS.filter((s) => progress.stickers[s.id]).length;
   const streak = currentStreak(progress);
   // The nearest stickers still to earn, to give a reason to keep going.
@@ -93,7 +102,7 @@ export default function Album({ progress, onOpenPurse }: { progress: Progress; o
           {half.map((groups, i) => (
             <div className="album-page" key={i}>
               {groups.map((g) => (
-                <Group key={g.title} group={g} progress={progress} />
+                <Group key={g.title} group={g} progress={progress} placing={placing} onPlace={onPlace} />
               ))}
             </div>
           ))}
@@ -102,11 +111,88 @@ export default function Album({ progress, onOpenPurse }: { progress: Progress; o
           </span>
         </div>
       </div>
+      {placing && <Placement id={placing} onCancel={() => onPlace(null)} onPlaced={onPlaced} />}
     </section>
   );
 }
 
-function Group({ group, progress }: { group: StickerGroup; progress: Progress }) {
+/**
+ * Sticking a sticker in by hand: it waits on its backing paper at the bottom of the screen; drag it onto the glowing
+ * spot in the album and let go. Close enough and it snaps in and presses flat; otherwise it springs back.
+ * A button does the same for keyboard and screen-reader users.
+ */
+function Placement({ id, onCancel, onPlaced }: { id: string; onCancel: () => void; onPlaced: (id: string) => void }) {
+  const s = STICKERS.find((x) => x.id === id);
+  const home = useRef<HTMLDivElement>(null);
+  const [drag, setDrag] = useState<{ x: number; y: number } | null>(null);
+  const [snap, setSnap] = useState<{ x: number; y: number } | null>(null);
+  const start = useRef<{ x: number; y: number } | null>(null);
+
+  const target = () => document.querySelector<HTMLElement>(`[data-slot="${id}"] .ghost`);
+  // bring the waiting spot into view
+  useEffect(() => {
+    target()?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }, [id]);
+
+  const finish = () => {
+    const t = target()?.getBoundingClientRect();
+    const h = home.current?.getBoundingClientRect();
+    if (t && h) setSnap({ x: t.left + t.width / 2 - (h.left + h.width / 2), y: t.top + t.height / 2 - (h.top + h.height / 2) });
+    window.setTimeout(() => onPlaced(id), 520);
+  };
+  const onDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    e.currentTarget.setPointerCapture(e.pointerId);
+    start.current = { x: e.clientX, y: e.clientY };
+    setDrag({ x: 0, y: 0 });
+  };
+  const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!start.current) return;
+    setDrag({ x: e.clientX - start.current.x, y: e.clientY - start.current.y });
+  };
+  const onUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!start.current) return;
+    start.current = null;
+    const t = target()?.getBoundingClientRect();
+    const near = t && Math.hypot(e.clientX - (t.left + t.width / 2), e.clientY - (t.top + t.height / 2)) < Math.max(70, t.width * 0.7);
+    if (near) finish();
+    else setDrag(null);
+  };
+  if (!s) return null;
+  const offset = snap ?? drag;
+  return (
+    <div className="placement" role="region" aria-label={`Stick ${s.name} into the album`}>
+      <div className="placement-card">
+        <div
+          ref={home}
+          className={`placement-sticker${drag ? ' dragging' : ''}${snap ? ' snapping' : ''}`}
+          style={offset ? { transform: `translate(${offset.x}px, ${offset.y}px)` } : undefined}
+          onPointerDown={snap ? undefined : onDown}
+          onPointerMove={onMove}
+          onPointerUp={onUp}
+          onPointerCancel={() => { start.current = null; setDrag(null); }}
+        >
+          <StickerArt id={s.id} size={120} shine={drag ? { x: 0.4, y: 0.3 } : null} />
+        </div>
+        <div className="placement-text">
+          <b>
+            <span lang="ja">{s.jp}</span> {s.name}
+          </b>
+          <span>Drag the sticker onto its glowing spot in the album.</span>
+          <span className="placement-actions">
+            <button type="button" className="btn small" onClick={finish} disabled={!!snap}>
+              Stick it here
+            </button>
+            <button type="button" className="btn small ghost" onClick={onCancel}>
+              Later
+            </button>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Group({ group, progress, placing, onPlace }: { group: StickerGroup; progress: Progress; placing: string | null; onPlace: (id: string) => void }) {
   return (
     <section className="sticker-group">
       <h2>
@@ -117,15 +203,32 @@ function Group({ group, progress }: { group: StickerGroup; progress: Progress })
       </h2>
       <div className="slots">
         {group.stickers.map((s) => (
-          <Slot key={s.id} sticker={s} progress={progress} />
+          <Slot key={s.id} sticker={s} progress={progress} placing={placing} onPlace={onPlace} />
         ))}
       </div>
     </section>
   );
 }
 
-function Slot({ sticker: s, progress }: { sticker: Sticker; progress: Progress }) {
+function Slot({ sticker: s, progress, placing, onPlace }: { sticker: Sticker; progress: Progress; placing: string | null; onPlace: (id: string) => void }) {
   const when = progress.stickers[s.id];
+  // earned but not stuck in yet: the spot glows, waiting for the sticker
+  if (when && progress.toStick.includes(s.id)) {
+    return (
+      <div className={`slot pending${placing === s.id ? ' target' : ''}`} data-slot={s.id}>
+        <div className="ghost halo" aria-hidden="true">
+          <StickerArt id={s.id} size={112} />
+        </div>
+        <span className="slot-jp" lang="ja">{s.jp}</span>
+        <span className="slot-name">{s.name}</span>
+        {placing !== s.id && (
+          <button type="button" className="btn small stick-now" onClick={() => onPlace(s.id)}>
+            Stick it in
+          </button>
+        )}
+      </div>
+    );
+  }
   const [have, need] = s.goal(progress);
   if (!when) {
     return (

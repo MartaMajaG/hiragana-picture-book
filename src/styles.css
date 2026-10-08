@@ -36,7 +36,7 @@
 }
 
 /* The pages: aged paper, sumi-brown ink. Anything printed on paper uses these tokens. */
-.spread, .cell, .sheet, .coach {
+.spread, .cell, .sheet, .coach, .new-sticker, .placement-card {
   --surface: #f5ead4;
   --plate: #f7eed9;
   --ink: #33281f;
@@ -1087,6 +1087,56 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
 .earn-list b { font-family: var(--hand); color: #8f6a2c; font-variant-numeric: tabular-nums; }
 .purse-next { font-family: var(--hand); font-size: 15px; margin: 14px 0 16px; }
 .purse-next b { color: var(--shu); }
+
+/* a newly earned sticker, just peeled off its backing paper */
+.new-sticker-scrim { z-index: 45; }
+.new-sticker {
+  position: relative; width: min(400px, 100%); padding: 26px 26px 22px; text-align: center; color: #33281f;
+  background: var(--washi), #f7eed9; clip-path: var(--scrap-note); filter: drop-shadow(0 24px 30px rgba(0, 0, 0, 0.5));
+  animation: drop 0.35s ease-out both;
+}
+.ns-backing {
+  margin: 0 auto 10px; width: 230px; height: 220px; display: grid; place-items: center; border-radius: 10px;
+  background: repeating-linear-gradient(45deg, rgba(120, 85, 40, 0.06) 0 6px, transparent 6px 12px), rgba(120, 85, 40, 0.06);
+}
+.ns-art { display: block; animation: peeloff 0.9s 0.15s cubic-bezier(0.2, 0.9, 0.25, 1.3) both; }
+@keyframes peeloff { from { opacity: 0; transform: translateY(20px) rotate(10deg) scale(0.8); } 60% { transform: translateY(-14px) rotate(-8deg) scale(1.06); } }
+.ns-kicker { display: block; font-family: var(--hand); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--shu); font-weight: 700; }
+.new-sticker h2 { font-family: var(--f-display); font-size: 30px; margin: 4px 0 2px; }
+.new-sticker h2 [lang] { color: var(--shu); margin-right: 4px; }
+.ns-how { margin: 0 0 18px; font-family: var(--hand); color: #65533f; }
+.ns-actions { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.new-sticker .btn.ghost { color: #65533f; border-color: transparent; background: none; }
+
+/* a spot waiting for its sticker: a softly pulsing halo */
+.slot.pending .ghost.halo {
+  opacity: 1; filter: none; mix-blend-mode: normal; border-radius: 50%; outline: 2px dashed rgba(194, 90, 71, 0.55); outline-offset: 4px;
+  box-shadow: 0 0 0 10px rgba(242, 200, 78, 0.18), 0 0 26px 10px rgba(242, 200, 78, 0.35); animation: halo 2s ease-in-out infinite;
+}
+.slot.pending .ghost.halo .sticker-art { opacity: 0.18; filter: grayscale(1); }
+.slot.pending.target .ghost.halo { outline-color: var(--shu); box-shadow: 0 0 0 12px rgba(242, 200, 78, 0.28), 0 0 36px 16px rgba(242, 200, 78, 0.5); }
+@keyframes halo { 50% { box-shadow: 0 0 0 14px rgba(242, 200, 78, 0.1), 0 0 34px 14px rgba(242, 200, 78, 0.5); } }
+.stick-now { margin-top: 8px; }
+
+/* the sticker waiting on its backing paper, ready to drag */
+.placement { position: fixed; left: 0; right: 0; bottom: 18px; z-index: 35; display: flex; justify-content: center; pointer-events: none; padding: 0 16px; }
+.placement-card {
+  pointer-events: auto; display: flex; align-items: center; gap: 18px; padding: 14px 22px 14px 16px; color: #33281f; max-width: 560px;
+  position: relative; isolation: isolate;
+}
+/* the torn backing paper is its own layer, so the sticker can be dragged off it without being clipped */
+.placement-card::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; background: var(--washi), #f7eed9; clip-path: var(--scrap-note);
+  filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.55));
+}
+.placement-sticker { flex: none; cursor: grab; touch-action: none; position: relative; z-index: 2; transition: transform 0.35s cubic-bezier(0.2, 0.9, 0.25, 1.2); }
+.placement-sticker.dragging { cursor: grabbing; transition: none; filter: drop-shadow(0 18px 14px rgba(50, 30, 10, 0.35)); scale: 1.08; }
+.placement-sticker.snapping { transition: transform 0.45s cubic-bezier(0.3, 0.8, 0.3, 1); scale: 0.93; }
+.placement-text { display: flex; flex-direction: column; gap: 4px; font-family: var(--hand); font-size: 15px; color: #65533f; }
+.placement-text b { font-family: var(--f-display); font-size: 20px; color: #33281f; }
+.placement-text b [lang] { color: var(--shu); margin-right: 4px; }
+.placement-actions { display: flex; gap: 8px; margin-top: 6px; }
+.placement .btn.ghost { color: #65533f; background: none; border-color: transparent; }
 
 @media (prefers-reduced-motion: reduce) { .lift.on .sticker-art, .lift.pressed .sticker-art { transform: none; } }
 

@@ -5,7 +5,7 @@ import HelpSheet, { type HelpTopic } from './components/HelpSheet';
 import Lesson, { type LessonMode } from './views/Lesson';
 import Review from './views/Review';
 import Album from './views/Album';
-import StickerToast from './components/StickerToast';
+import NewSticker from './components/NewSticker';
 import CoinPurse from './components/CoinPurse';
 import { KANA, kanaIndex } from './data/kana';
 import { STICKERS, newlyEarned } from './data/stickers';
@@ -32,6 +32,12 @@ export default function App() {
   const [lastIndex, setLastIndex] = useState(route.view === 'lesson' ? route.index : 0);
   const [toasts, setToasts] = useState<string[]>([]);
   const [purse, setPurse] = useState(false);
+  // the sticker currently being dragged into the album, if any
+  const [placing, setPlacing] = useState<string | null>(null);
+  const placeSticker = useCallback(
+    (id: string) => setProgress((p) => ({ ...p, toStick: p.toStick.filter((x) => x !== id) })),
+    [],
+  );
 
   useEffect(() => {
     const onHash = () => setRoute(parseHash());
@@ -60,8 +66,12 @@ export default function App() {
     const fresh = newlyEarned(progress);
     if (!fresh.length) return;
     const now = new Date().toISOString();
-    setProgress((p) => ({ ...p, stickers: { ...p.stickers, ...Object.fromEntries(fresh.map((x) => [x.id, now])) } }));
-    setToasts((t) => [...t, ...fresh.map((x) => x.id)]);
+    setProgress((p) => ({
+      ...p,
+      stickers: { ...p.stickers, ...Object.fromEntries(fresh.map((x) => [x.id, now])) },
+      toStick: [...p.toStick, ...fresh.map((x) => x.id).filter((id) => !p.toStick.includes(id))],
+    }));
+    setToasts((t) => [...t, ...fresh.map((x) => x.id).filter((id) => !t.includes(id))]);
   }, [progress]);
   const dropToast = useCallback(() => setToasts((t) => t.slice(1)), []);
 
@@ -184,7 +194,16 @@ export default function App() {
         ) : route.view === 'review' ? (
           <Review stats={progress.review} onResult={recordReview} />
         ) : (
-          <Album progress={progress} onOpenPurse={() => setPurse(true)} />
+          <Album
+            progress={progress}
+            onOpenPurse={() => setPurse(true)}
+            placing={placing}
+            onPlace={setPlacing}
+            onPlaced={(id) => {
+              placeSticker(id);
+              setPlacing(null);
+            }}
+          />
         )}
       </main>
 
@@ -199,7 +218,16 @@ export default function App() {
       {help && <HelpSheet topic={topic} onClose={() => setHelp(false)} />}
       {purse && <CoinPurse progress={progress} onClose={() => setPurse(false)} />}
       {toasts.length > 0 && (
-        <StickerToast id={toasts[0]} onDone={dropToast} onOpen={() => { dropToast(); setRoute({ view: 'stickers' }); }} />
+        <NewSticker
+          id={toasts[0]}
+          onLater={dropToast}
+          onStick={() => {
+            const id = toasts[0];
+            dropToast();
+            setPlacing(id);
+            setRoute({ view: 'stickers' });
+          }}
+        />
       )}
     </>
   );

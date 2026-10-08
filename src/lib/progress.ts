@@ -24,12 +24,14 @@ export interface Progress {
   early: boolean;
   /** Stickers earned: id → ISO date. */
   stickers: Record<string, string>;
+  /** Earned stickers still waiting to be stuck into the album by hand. */
+  toStick: string[];
 }
 
 const KEY = 'hiragana-picture-book/v1';
 const empty = (): Progress => ({
   written: [], review: {}, tipsSeen: [], opened: [], mon: 0, perfect: 0, answered: 0, run: 0, bestRun: 0,
-  days: { last: '', streak: 0, best: 0 }, late: false, early: false, stickers: {},
+  days: { last: '', streak: 0, best: 0 }, late: false, early: false, stickers: {}, toStick: [],
 });
 
 export function loadProgress(): Progress {
