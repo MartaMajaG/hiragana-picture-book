@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import SvgDefs from './components/SvgDefs';
 import KanaChart from './components/KanaChart';
 import HelpSheet, { type HelpTopic } from './components/HelpSheet';
+import SettingsSheet from './components/SettingsSheet';
 import Lesson, { type LessonMode } from './views/Lesson';
 import Review from './views/Review';
 import Album from './views/Album';
@@ -30,6 +31,7 @@ export default function App() {
   const [route, setRoute] = useState<Route>(parseHash);
   const [progress, setProgress] = useState<Progress>(loadProgress);
   const [help, setHelp] = useState(false);
+  const [settings, setSettings] = useState(false);
   const [lastIndex, setLastIndex] = useState(route.view === 'lesson' ? route.index : 0);
   const [toasts, setToasts] = useState<string[]>([]);
   const [purse, setPurse] = useState(false);
@@ -87,14 +89,14 @@ export default function App() {
   // ← → move between characters while in a lesson (not while typing or drawing)
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (route.view !== 'lesson' || help) return;
+      if (route.view !== 'lesson' || help || settings) return;
       if ((e.target as HTMLElement)?.closest('input, textarea')) return;
       if (e.key === 'ArrowRight') go(route.index + 1);
       if (e.key === 'ArrowLeft') go(route.index - 1);
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [route, help]);
+  }, [route, help, settings]);
 
   // Writing from memory: 5 mon the first time, 2 after that, and 3 more for a write with no slips.
   const markWritten = useCallback(
@@ -172,8 +174,12 @@ export default function App() {
             {balance(progress)} mon to spend, {streak} day streak
           </span>
         </button>
-        <button type="button" className="icon-btn help" aria-label="Help" aria-haspopup="dialog" onClick={() => setHelp(true)}>
-          ?
+        <button type="button" className="icon-btn help settings-btn" aria-label="Settings and help" aria-haspopup="dialog" onClick={() => setSettings(true)}>
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3.2" />
+            <path d="M12 2.8v2.6M12 18.6v2.6M21.2 12h-2.6M5.4 12H2.8M18.5 5.5l-1.8 1.8M7.3 16.7l-1.8 1.8M18.5 18.5l-1.8-1.8M7.3 7.3 5.5 5.5" />
+            <circle cx="12" cy="12" r="6.4" />
+          </svg>
         </button>
       </header>
 
@@ -233,6 +239,15 @@ export default function App() {
         by Ulrich Apel, CC BY-SA 3.0. Illustrations and mnemonics are original.
       </footer>
 
+      {settings && (
+        <SettingsSheet
+          onClose={() => setSettings(false)}
+          onHelp={() => {
+            setSettings(false);
+            setHelp(true);
+          }}
+        />
+      )}
       {help && <HelpSheet topic={topic} onClose={() => setHelp(false)} />}
       {purse && (
         <CoinPurse

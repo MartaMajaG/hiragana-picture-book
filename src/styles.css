@@ -1502,3 +1502,87 @@ body {
 .hunt-star { color: #c79a3a; letter-spacing: -0.1em; margin-right: 4px; }
 .hunt-link { border: 0; background: none; padding: 0; font: inherit; color: var(--shu); cursor: pointer; text-decoration: underline; text-decoration-style: wavy; text-decoration-color: rgba(194, 90, 71, 0.4); text-underline-offset: 4px; }
 .hunt-link:hover { text-decoration-color: var(--shu); }
+
+/* ---------- the desk under the book: chosen in Settings ----------
+   indigo: indigo-dyed cloth stencilled with a faint shippō pattern of linked circles (the default)
+   wood: a walnut desk under lamplight
+   kinpaku: deep green paper flecked with gold leaf, like a fusuma panel */
+:root {
+  --desk-indigo:
+    radial-gradient(ellipse 70% 55% at 22% 0%, rgba(255, 214, 150, 0.12), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 35%, transparent 55%, rgba(5, 10, 20, 0.5) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cg fill='none' stroke='%23a9bde0' stroke-opacity='.13' stroke-width='1.2'%3E%3Ccircle cx='0' cy='0' r='28'/%3E%3Ccircle cx='56' cy='0' r='28'/%3E%3Ccircle cx='0' cy='56' r='28'/%3E%3Ccircle cx='56' cy='56' r='28'/%3E%3Ccircle cx='28' cy='28' r='28'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 56px 56px,
+    var(--dye), #1b2a46;
+  --desk-wood:
+    radial-gradient(ellipse 70% 55% at 22% 0%, rgba(255, 200, 130, 0.16), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 35%, transparent 50%, rgba(10, 5, 0, 0.6) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0018 .028' numOctaves='5' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .36  0 0 0 0 .22  0 0 0 0 .12  0 0 0 .9 -.15'/%3E%3C/filter%3E%3Crect width='900' height='900' filter='url(%23w)'/%3E%3C/svg%3E") 0 0 / cover,
+    #2a1a10;
+  --desk-kinpaku:
+    radial-gradient(ellipse 70% 55% at 22% 0%, rgba(255, 220, 160, 0.10), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 35%, transparent 55%, rgba(0, 8, 5, 0.5) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.09' numOctaves='2' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 .86  0 0 0 0 .7  0 0 0 0 .36  0 0 0 16 -13.4'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)'/%3E%3C/svg%3E") 0 0 / 400px 400px,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004' numOctaves='3' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 .1  0 0 0 0 .17  0 0 0 0 .14  0 0 0 .8 -.15'/%3E%3C/filter%3E%3Crect width='600' height='600' filter='url(%23d)'/%3E%3C/svg%3E") 0 0 / cover,
+    #1f302a;
+}
+html body, html[data-desk='indigo'] body { background: var(--desk-indigo); background-attachment: fixed; }
+html[data-desk='wood'] body { background: var(--desk-wood); background-attachment: fixed; }
+html[data-desk='kinpaku'] body { background: var(--desk-kinpaku); background-attachment: fixed; }
+html[data-desk='wood'] { --bg: #2a1a10; }
+html[data-desk='kinpaku'] { --bg: #1f302a; }
+
+/* settings */
+.settings-sheet { width: min(520px, 100%); padding-bottom: 30px; }
+.settings-sheet h2 [lang] { color: var(--shu); margin-right: 6px; }
+.settings-h { font-family: var(--f-display); font-size: 17px; font-weight: 600; margin: 18px 0 10px; }
+.desk-picks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.desk-pick { display: flex; flex-direction: column; gap: 4px; padding: 0; border: 0; background: none; cursor: pointer; text-align: left; color: inherit; }
+.desk-swatch {
+  position: relative; display: grid; place-items: center; height: 82px; border-radius: 6px; overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15); outline: 2px solid transparent; outline-offset: 3px; transition: outline-color 0.15s;
+}
+.desk-swatch.indigo { background: var(--desk-indigo); }
+.desk-swatch.wood { background: var(--desk-wood); }
+.desk-swatch.kinpaku { background: var(--desk-kinpaku); }
+.mini-book { width: 54%; height: 52%; border-radius: 2px; background: linear-gradient(90deg, #efe5cb 48%, #d8caa8 50%, #efe5cb 52%); box-shadow: 0 6px 10px -4px rgba(0, 0, 0, 0.6); }
+.desk-pick[aria-checked='true'] .desk-swatch { outline-color: var(--shu); }
+.desk-pick:hover .desk-swatch { outline-color: rgba(194, 90, 71, 0.4); }
+.desk-name { font-family: var(--f-display); font-weight: 600; font-size: 15px; margin-top: 6px; }
+.desk-name [lang] { color: var(--shu); font-size: 0.85em; margin-right: 2px; }
+.desk-note { font-family: var(--hand); font-size: 13px; color: #65533f; line-height: 1.35; }
+.desk-pick[aria-checked='true'] .desk-name::after { content: ' ✓'; color: var(--shu); }
+@media (max-width: 480px) { .desk-picks { grid-template-columns: 1fr 1fr; } }
+.settings-btn svg { display: block; }
+
+/* the open book always fits the window: the picture (a square, so the tallest thing on the spread) is capped by the
+   window height, and centred on its page; the text page keeps its full width */
+@media (min-width: 821px) {
+  .lesson .spread .plate, .review .spread .plate { width: min(100%, calc(100svh - 372px)); min-width: 320px; justify-self: center; }
+}
+@media (min-width: 821px) {
+  .spread .info { gap: 14px; }
+  .spread .story { font-size: 17.5px; line-height: 1.75; }
+  .spread .info h2 { font-size: 36px; }
+  .spread .facts { gap: 12px 28px; }
+}
+@media (min-width: 821px) {
+  /* strokes, sound and example word on one line, so long stories still leave the page fitting the window */
+  .spread .facts { grid-template-columns: auto auto minmax(0, 1fr); gap: 10px 32px; }
+  .spread .facts .wide { grid-column: auto; }
+  .spread .facts .word { font-size: 24px; }
+  .spread .story { font-size: 17px; line-height: 1.7; }
+}
+@media (min-width: 821px) { .spread .facts { grid-template-columns: auto minmax(0, 1fr) minmax(0, 1.5fr); gap: 10px 24px; } }
+@media (min-width: 821px) {
+  /* the text page scales with the book, like print: a narrower book has smaller type instead of more lines */
+  .lesson .spread, .review .spread { container-type: inline-size; }
+  .spread .info h2 { font-size: clamp(24px, 3.2cqi, 38px); }
+  .spread .story { font-size: clamp(13.5px, 1.5cqi, 18px); }
+  .spread .facts dt { font-size: clamp(12px, 1.3cqi, 15px); }
+  .spread .facts dd { font-size: clamp(13px, 1.4cqi, 16px); }
+  .spread .facts .word { font-size: clamp(18px, 2.1cqi, 26px); }
+  .spread .info { gap: clamp(8px, 1.2cqi, 14px); }
+}
+@media (min-width: 821px) and (max-height: 880px) {
+  .lesson .spread, .review .spread { padding-top: 36px; padding-bottom: 46px; }
+}

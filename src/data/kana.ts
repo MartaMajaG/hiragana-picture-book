@@ -152,7 +152,7 @@ export const KANA: Kana[] = [
     story: "A walrus sitting up and waving. The upright stroke is the front of its face and chest. In the second stroke, the short top line is its whiskery snout, the zigzag is its long tusk and waving flipper, and the big round sweep is its back. Wa for walrus.", 
     word: { kana: "わたし", reading: "watashi · I, me" } },
   { kana: "を", romaji: "wo", hue: 30, row: "わ", title: "Whoa! A banana peel", sounds: "o in \"whoa!\" (written wo)", 
-    story: "Someone slips on a banana peel and yells \"Whoa!\". The short top stroke is their arms flung out, the zigzag middle stroke is their body twisting as they topple, and the last stroke is their legs, one kicked up high and the other skidding along the ground onto the peel. を only ever marks the object of a sentence.", 
+    story: "Someone slips on a banana peel and yells \"Whoa!\". The short top stroke is their arms flung out, the zigzag middle stroke is their body twisting as they topple, and the last stroke is their legs, one kicked up high and the other skidding along the ground onto the peel.", 
     word: { kana: "…を", reading: "particle · marks the object, as in ほんをよむ (read a book)" } },
   { kana: "ん", romaji: "n", hue: 205, row: "ん", title: "A swan", sounds: "n at the end of \"swan\"", 
     story: "No English word starts with ん, but it's the n at the end of swan. The long diagonal is the swan's neck from its head down to its chest, the hump is its back and folded wing, and the final rise is its tail. ん never starts a word.", 

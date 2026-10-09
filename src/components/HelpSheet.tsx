@@ -26,7 +26,7 @@ const CONTENT: Record<HelpTopic, { title: string; items: [string, string][] }> =
       ['Earn mon', 'Mon (文) are old Japanese coins. You get them for opening lessons, writing from memory (extra for no slips) and right answers in review, with a bonus while a run keeps going.'],
       ['Keep a daily streak', 'Practise a little every day. The 日 count in the top bar shows how many days in a row.'],
       ['Collect stickers', 'Each sticker is something from Japanese culture. When you earn one, drag it onto its glowing spot in the album. Hover or tap it to read about it. Two are secret.'],
-      ['Spend mon at the gachapon', 'Open the Gachapon tab in the sticker book: 30 mon turns the handle for a capsule with a sweets-and-snacks sticker. Duplicates give 5 mon back.'],
+      ['Spend mon at the gachapon', 'Open the Gachapon tab in the sticker book: 30 mon turns the handle for a capsule sticker. Collect all but the super rare to open the next series. Keep spares to download and print, or trade them back for mon.'],
     ],
   },
   review: {
@@ -34,7 +34,7 @@ const CONTENT: Record<HelpTopic, { title: string; items: [string, string][] }> =
     items: [
       ['Choose what to practise', 'Above the quiz, pick the kind of question and which rows of the chart to include.'],
       ['Two kinds of question', 'Read the character shown, or find the character for a sound.'],
-      ['Focus on the hard ones', 'Characters you miss come up more often until you get them right.'],
+      ['Focus on the hard ones', 'Characters you miss come up much more often; ones you keep getting right come up rarely.'],
     ],
   },
 };
