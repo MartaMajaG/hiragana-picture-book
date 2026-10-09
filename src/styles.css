@@ -1384,3 +1384,22 @@ body {
 }
 .steps li.ok { color: var(--good); }
 .steps li.ok::before { content: '✓'; color: var(--good); font-family: var(--hand); }
+
+/* page edges: a smooth curve of fixed height, so tall spreads (the album) don't stretch it into facets and a deep V */
+:root {
+  --top-l: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M0,20 L0,6 C30,1.5 62,0.5 78,2 C90,3.2 97,6.5 100,11 L100,20 Z'/%3E%3C/svg%3E");
+  --top-r: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 20' preserveAspectRatio='none'%3E%3Cpath d='M100,20 L100,6 C70,1.5 38,0.5 22,2 C10,3.2 3,6.5 0,11 L0,20 Z'/%3E%3C/svg%3E");
+  --bot-l: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M0,0 L100,0 L100,4 C92,8 70,11 40,11.3 C20,11.3 6,10.6 0,9.5 Z'/%3E%3C/svg%3E");
+  --bot-r: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 12' preserveAspectRatio='none'%3E%3Cpath d='M100,0 L0,0 L0,4 C8,8 30,11 60,11.3 C80,11.3 94,10.6 100,9.5 Z'/%3E%3C/svg%3E");
+  --fill: linear-gradient(#000, #000);
+}
+.spread::before, .spread::after { clip-path: none; }
+.spread::before {
+  -webkit-mask: var(--top-l) top / 100% 20px no-repeat, var(--fill) 0 19px / 100% calc(100% - 30px) no-repeat, var(--bot-l) bottom / 100% 12px no-repeat;
+  mask: var(--top-l) top / 100% 20px no-repeat, var(--fill) 0 19px / 100% calc(100% - 30px) no-repeat, var(--bot-l) bottom / 100% 12px no-repeat;
+}
+.spread::after {
+  -webkit-mask: var(--top-r) top / 100% 20px no-repeat, var(--fill) 0 19px / 100% calc(100% - 30px) no-repeat, var(--bot-r) bottom / 100% 12px no-repeat;
+  mask: var(--top-r) top / 100% 20px no-repeat, var(--fill) 0 19px / 100% calc(100% - 30px) no-repeat, var(--bot-r) bottom / 100% 12px no-repeat;
+}
+@media (max-width: 820px) { .spread::before { -webkit-mask: none; mask: none; } }
