@@ -1,4 +1,4 @@
-// The gachapon capsule series, collected by spending mon. Each series unlocks once the one before it is complete.
+// The gachapon capsule series, collected by spending mon. Each series unlocks once the one before it has all but its super rare.
 import type { Progress } from '../lib/progress';
 
 export type Rarity = 'common' | 'rare' | 'super';
@@ -183,8 +183,10 @@ export const SERIES: Series[] = [
 export const CAPSULES: Capsule[] = SERIES.flatMap((x) => x.capsules);
 
 export const seriesDone = (p: Progress, x: Series) => x.capsules.every((c) => p.capsules[c.id]);
-/** A series is open once the one before it is complete. */
-export const seriesOpen = (p: Progress, i: number) => i === 0 || seriesDone(p, SERIES[i - 1]);
+/** The next series opens once everything but the super rare is collected: the super rare can take a long time to turn up. */
+export const seriesUnlocksNext = (p: Progress, x: Series) => x.capsules.every((c) => c.rarity === 'super' || p.capsules[c.id]);
+/** A series is open once the one before it has all but its super rare. */
+export const seriesOpen = (p: Progress, i: number) => i === 0 || seriesUnlocksNext(p, SERIES[i - 1]);
 
 
 /** What's left in the purse to spend: everything earned, less what's gone into the machine. */

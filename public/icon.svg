@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#c25a47"/>
+  <rect x="64" y="64" width="384" height="384" rx="18" fill="none" stroke="#f6eedd" stroke-opacity=".55" stroke-width="10"/>
+  <text x="256" y="350" text-anchor="middle" font-family="Hiragino Mincho ProN, Shippori Mincho, serif" font-weight="700" font-size="270" fill="#f6eedd">あ</text>
+</svg>

@@ -153,13 +153,13 @@ export default function App() {
         </a>
         <nav aria-label="Main">
           <button type="button" aria-current={route.view === 'lesson' ? 'page' : undefined} onClick={() => go(lastIndex)}>
-            Lessons
+            <span className="nav-ico" lang="ja" aria-hidden="true">学</span>Lessons
           </button>
           <button type="button" aria-current={route.view === 'review' ? 'page' : undefined} onClick={() => setRoute({ view: 'review' })}>
-            Review
+            <span className="nav-ico" lang="ja" aria-hidden="true">復</span>Review
           </button>
           <button type="button" aria-current={route.view === 'stickers' ? 'page' : undefined} onClick={() => setRoute({ view: 'stickers' })}>
-            Stickers <span className="nav-count">{stickerCount}/{STICKERS.length}</span>
+            <span className="nav-ico" lang="ja" aria-hidden="true">帖</span>Stickers <span className="nav-count">{stickerCount}/{STICKERS.length}</span>
           </button>
         </nav>
         <button type="button" className="purse" onClick={() => setPurse(true)} title="Your purse: mon earned and days in a row">

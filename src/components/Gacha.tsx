@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import StickerArt, { tiltFor } from './StickerArt';
 import Placement from './Placement';
-import { CAPSULES, TRADE_VALUE, GACHA_COST, SERIES, balance, seriesDone, seriesOpen, type Capsule } from '../data/gacha';
+import { CAPSULES, TRADE_VALUE, GACHA_COST, SERIES, balance, seriesDone, seriesOpen, seriesUnlocksNext, type Capsule } from '../data/gacha';
 import { CAPSULE, MACHINE } from '../gacha/machine';
 import { pastelize } from '../lib/illustration';
 import { prefersReducedMotion } from '../lib/motion';
@@ -39,7 +39,7 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
   // open on the newest series that's unlocked and not yet complete
   const [si, setSi] = useState(() => {
     const open = SERIES.map((_, i) => i).filter((i) => seriesOpen(progress, i));
-    return open.find((i) => !seriesDone(progress, SERIES[i])) ?? open[open.length - 1];
+    return open.find((i) => !seriesUnlocksNext(progress, SERIES[i])) ?? open[open.length - 1];
   });
   const series = SERIES[si];
   const timers = useRef<number[]>([]);
@@ -62,6 +62,8 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
   const count = (id: string) => (progress.capsules[id] ?? 0) - (id === hidden && result?.isNew ? 1 : 0);
   const owned = series.capsules.filter((c) => count(c.id) > 0).length;
   const complete = phase === 'idle' && seriesDone(progress, series);
+  // everything but the super rare: the next series is already open
+  const nextOpen = phase === 'idle' && !complete && seriesUnlocksNext(progress, series);
   const nextSeries = SERIES[si + 1];
 
   const turn = () => {
@@ -109,7 +111,7 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
                 className={`series-chip${done ? ' done' : ''}${open ? '' : ' locked'}`}
                 style={{ ['--machine' as string]: x.machine[0] } as React.CSSProperties}
                 onClick={() => setSi(i)}
-                title={open ? x.name : `Complete ${SERIES[i - 1].name} to unlock`}
+                title={open ? x.name : `Collect all of ${SERIES[i - 1].name} except the super rare to unlock`}
               >
                 <span className="dot" aria-hidden="true">{done ? '✓' : open ? '' : '🔒'}</span>
                 <span className="chip-text">
@@ -184,8 +186,28 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
         </h2>
         <p className="gacha-intro">
           {owned} of {series.capsules.length} collected. Rare capsules turn up less often.
-          {nextSeries && !complete && ` Complete it to unlock ${nextSeries.name}.`}
+          {nextSeries && !complete && !nextOpen && ` Collect all but the super rare to unlock ${nextSeries.name}.`}
         </p>
+        {nextOpen && (
+          <div className="series-complete">
+            <span className="seal" lang="ja" aria-hidden="true">開</span>
+            <span>
+              <b>Almost complete!</b> Only the super rare is still hiding in here.{' '}
+              {nextSeries ? (
+                <>
+                  <span lang="ja">{nextSeries.jp}</span> {nextSeries.name} is open, and you can come back for it any time.
+                </>
+              ) : (
+                'Keep turning the handle to find it.'
+              )}
+            </span>
+            {nextSeries && (
+              <button type="button" className="btn small" onClick={() => setSi(si + 1)}>
+                Go to {nextSeries.name} →
+              </button>
+            )}
+          </div>
+        )}
         {complete && (
           <div className="series-complete">
             <span className="seal" lang="ja" aria-hidden="true">完</span>
