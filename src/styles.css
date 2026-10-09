@@ -1429,3 +1429,68 @@ body {
 .next-up-h span { font-family: var(--hand); font-weight: 500; font-size: 16px; color: var(--muted); }
 .next-up li .nu-count { display: block; margin-top: 4px; font-family: var(--hand); font-size: 14px; color: #65533f; }
 .next-up li .nu-count b { display: inline; font-family: var(--f-display); font-size: 15px; color: #33281f; }
+
+/* phones: notes open towards the middle of the screen instead of off its edge */
+@media (max-width: 640px) {
+  .egg-note { width: min(250px, calc(100vw - 48px)); }
+  .slot:nth-child(odd) .egg-note.up { left: 0; margin-left: 0; }
+  .slot:nth-child(even) .egg-note.up { left: auto; right: 0; margin-left: 0; }
+  .egg-note.left { right: 0; top: calc(100% + 10px); }
+  .egg-note.right { left: auto; right: 0; top: calc(100% + 10px); }
+}
+
+/* no rule under the app bar: the bar simply sits on the cloth */
+.appbar::after { content: none; }
+
+/* ---------- phones ----------
+   The main navigation moves to a tab bar at the bottom, in reach of the thumb, like a native app.
+   The top bar keeps only the title mark, the purse and help. */
+.nav-ico { display: none; }
+@media (max-width: 640px) {
+  .appbar { padding-block: calc(env(safe-area-inset-top, 0px) + 10px) 6px; }
+  .appbar nav {
+    position: fixed; z-index: 30; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    padding: 6px 8px calc(env(safe-area-inset-bottom, 0px) + 6px);
+    background: var(--washi), #f1e4c8; box-shadow: 0 -8px 20px -10px rgba(0, 0, 0, 0.6);
+  }
+  .appbar nav button, .appbar nav button:hover, .appbar nav button[aria-current='page'] {
+    display: flex; flex-direction: column; align-items: center; gap: 0; padding: 4px 4px 6px; min-height: 52px;
+    font-size: 13px; color: #65533f;
+  }
+  .appbar nav button[aria-current='page'] { color: #33281f; }
+  .appbar nav button[aria-current='page']::after { left: 28%; right: 28%; bottom: 0; }
+  .nav-ico { display: block; font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 20px; line-height: 1.2; }
+  .appbar nav button[aria-current='page'] .nav-ico { color: var(--shu); }
+  .appbar nav .nav-count { display: none; }
+  .brand { margin-right: auto; }
+  body { padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px)); }
+
+  /* album stats in a 2 × 2 grid instead of four tall rows */
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; }
+  .stats li { min-width: 0; }
+  .stat-text b { font-size: 24px; }
+  .stat-text small { font-size: 13px; line-height: 1.3; }
+  .stat-text .bar { width: 90px; }
+
+  /* review modes stay on one line each */
+  .review-settings .seg button, .review-settings .seg button[aria-pressed='true'] { font-size: 14px; padding: 6px 8px; white-space: nowrap; }
+  .review-settings .seg { flex-wrap: wrap; }
+
+  /* picture tools fit inside the frame */
+  .spread .plate .tools { left: 12px; right: 12px; bottom: 10px; gap: 2px; }
+  .chip { font-size: 13px; padding: 6px 4px; }
+  .seg.small button { padding: 4px 7px; font-size: 13px; }
+
+  /* page-turn tabs: slimmer, so they don't sit over the picture */
+  .turn.prev { left: -14px; } .turn.next { right: -14px; }
+  .turn { width: 30px; }
+}
+@media (max-width: 640px) {
+  /* the menu has moved to the bottom, so the purse has room for both mon and the day streak again */
+  .purse .sep { display: block; }
+  .purse b:nth-of-type(2) { display: inline; }
+  .purse .unit { display: inline; }
+  /* review: a shorter picture so the question and answers are on screen without scrolling */
+  .review .spread .plate { aspect-ratio: 4 / 3; }
+}
+@media (max-width: 640px) { .review .review-bar p { display: none; } }
