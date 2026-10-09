@@ -142,8 +142,8 @@ export default function App() {
         <a className="brand" href="#/learn/a" onClick={(e) => { e.preventDefault(); go(0, 'learn'); }}>
           <span className="mark" lang="ja" aria-hidden="true">あ</span>
           <span className="daisen">
-            <small lang="ja">ひらがな絵本</small>
-            <b>Hiragana Picture Book</b>
+            <small lang="ja">かな絵本</small>
+            <b>Kana Ehon</b>
           </span>
         </a>
         <nav aria-label="Main">

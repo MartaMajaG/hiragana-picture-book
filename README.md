@@ -1,4 +1,6 @@
-# Hiragana Picture Book
+# Kana Ehon かな絵本
+
+*A kana picture book: learn hiragana from an old Japanese picture book.*
 
 A small web app for learning hiragana. Each character is written stroke by stroke, then turns into a picture that helps you remember it. You can practise writing it yourself with a trackpad, mouse, finger or pen, and review everything in a shuffled quiz.
 

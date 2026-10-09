@@ -22,8 +22,8 @@ function PrintDetails({ kana }: { kana: Kana }) {
         place="left"
         note={
           <>
-            <b lang="ja">{kana.row}行</b> <i>{rowRomaji}-gyō</i> · the {rowRomaji} row. <b lang="ja">ひらがな絵本</b>{' '}
-            <i>hiragana ehon</i> · hiragana picture book.
+            <b lang="ja">{kana.row}行</b> <i>{rowRomaji}-gyō</i> · the {rowRomaji} row. <b lang="ja">かな絵本</b>{' '}
+            <i>kana ehon</i> · kana picture book, the name of this book.
             <span className="egg-fact">
               Old Japanese books printed the title down the outer margin of every page. It's called the hashira, the
               pillar.
@@ -31,7 +31,7 @@ function PrintDetails({ kana }: { kana: Kana }) {
           </>
         }
       >
-        {kana.row}行　ひらがな絵本
+        {kana.row}行　かな絵本
       </Egg>
       <Egg
         className="zousho"
