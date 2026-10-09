@@ -90,7 +90,8 @@ export default function App() {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (route.view !== 'lesson' || help || settings) return;
-      if ((e.target as HTMLElement)?.closest('input, textarea')) return;
+      // arrows inside a tab group or radio group move between its options instead
+      if (e.defaultPrevented || (e.target as HTMLElement)?.closest('input, textarea, select, [role="tablist"], [role="radiogroup"]')) return;
       if (e.key === 'ArrowRight') go(route.index + 1);
       if (e.key === 'ArrowLeft') go(route.index - 1);
     };

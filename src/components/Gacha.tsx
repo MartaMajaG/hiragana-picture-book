@@ -7,6 +7,7 @@ import { CAPSULE, MACHINE } from '../gacha/machine';
 import { pastelize } from '../lib/illustration';
 import { prefersReducedMotion } from '../lib/motion';
 import { downloadSticker, printSticker } from '../lib/printable';
+import { arrowKeys } from '../lib/a11y';
 import type { Progress } from '../lib/progress';
 
 /**
@@ -97,7 +98,7 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
         <h2>
           <span lang="ja">ガチャ</span> Gachapon
         </h2>
-        <div className="series-shelf" role="tablist" aria-label="Capsule series">
+        <div className="series-shelf" role="tablist" aria-label="Capsule series" onKeyDown={arrowKeys}>
           {SERIES.map((x, i) => {
             const open = seriesOpen(progress, i);
             const done = seriesDone(progress, x);
@@ -108,6 +109,7 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
                 type="button"
                 role="tab"
                 aria-selected={i === si}
+                tabIndex={i === si ? 0 : -1}
                 disabled={!open || phase !== 'idle'}
                 className={`series-chip${done ? ' done' : ''}${open ? '' : ' locked'}${hunting ? ' hunting' : ''}`}
                 style={{ ['--machine' as string]: x.machine[0] } as React.CSSProperties}
@@ -324,7 +326,7 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
 
 /** Paper confetti and sakura petals bursting out of the capsule. */
 function Confetti({ gold }: { gold: boolean }) {
-  const colours = gold ? ['#e3b04b', '#f2d27a', '#c79a4a', '#fff4d6'] : ['#e8a0a6', '#f2c84e', '#7cc6d6', '#9fbf8f', '#f7b8c6', '#c25a47'];
+  const colours = gold ? ['#e3b04b', '#f2d27a', '#c79a4a', '#fff4d6'] : ['#e8a0a6', '#f2c84e', '#7cc6d6', '#9fbf8f', '#f7b8c6', '#a8432f'];
   const bits = Array.from({ length: 26 }, (_, i) => {
     const a = (i / 26) * Math.PI * 2 + (i % 3) * 0.2;
     const d = 90 + (i % 5) * 26;

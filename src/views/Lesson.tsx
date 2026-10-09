@@ -3,6 +3,7 @@ import KanaStage from '../components/KanaStage';
 import TracePad, { type TracePhase } from '../components/TracePad';
 import { KANA, STROKES, kanaIndex, type Kana } from '../data/kana';
 import Egg, { kanjiNum, numberNote } from '../components/Egg';
+import { arrowKeys } from '../lib/a11y';
 
 export type LessonMode = 'learn' | 'practice';
 
@@ -121,20 +122,20 @@ export default function Lesson({ index, mode, onMode, onGo, onWritten, showPract
   return (
     <section className="lesson" aria-label={`Lesson: ${kana.kana}`}>
       <div className="lesson-bar">
-        <div className="lesson-id">
+        <h1 className="lesson-id">
           <span className="k" lang="ja">{kana.kana}</span>
           <span className="r">{kana.romaji}</span>
           <span className="pos">
             {kana.row} row · {index + 1} of {KANA.length}
           </span>
-        </div>
+        </h1>
       </div>
 
       <div className="book" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
         {/* index tabs sticking out of the top of the book */}
-        <div className="book-tabs" role="tablist" aria-label="Lesson mode">
+        <div className="book-tabs" role="tablist" aria-label="Lesson mode" onKeyDown={arrowKeys}>
           {(['learn', 'practice'] as const).map((m) => (
-            <button key={m} type="button" role="tab" aria-selected={mode === m} className={`tab ${m}`} onClick={() => onMode(m)}>
+            <button key={m} type="button" role="tab" aria-selected={mode === m} tabIndex={mode === m ? 0 : -1} className={`tab ${m}`} onClick={() => onMode(m)}>
               <span lang="ja">{m === 'learn' ? '学ぶ' : '書く'}</span>
               {m === 'learn' ? 'Learn' : 'Practice'}
             </button>

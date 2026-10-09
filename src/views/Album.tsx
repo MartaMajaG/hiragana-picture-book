@@ -5,6 +5,7 @@ import { currentStreak, type Progress } from '../lib/progress';
 import { KANA } from '../data/kana';
 import Gacha from '../components/Gacha';
 import Placement from '../components/Placement';
+import { arrowKeys } from '../lib/a11y';
 import type { Capsule } from '../data/gacha';
 
 interface AlbumProps {
@@ -119,11 +120,11 @@ export default function Album({ progress, onOpenPurse, placing, onPlace, onPlace
 
       <div className="book">
         {/* index tabs: the album itself, and the gachapon machine */}
-        <div className="book-tabs" role="tablist" aria-label="Sticker book">
-          <button type="button" role="tab" className="tab learn" aria-selected={tab === 'album'} onClick={() => setTab('album')}>
+        <div className="book-tabs" role="tablist" aria-label="Sticker book" onKeyDown={arrowKeys}>
+          <button type="button" role="tab" className="tab learn" aria-selected={tab === 'album'} tabIndex={tab === 'album' ? 0 : -1} onClick={() => setTab('album')}>
             <span lang="ja">帖</span>Album
           </button>
-          <button type="button" role="tab" className="tab practice" aria-selected={tab === 'gacha'} onClick={() => setTab('gacha')}>
+          <button type="button" role="tab" className="tab practice" aria-selected={tab === 'gacha'} tabIndex={tab === 'gacha' ? 0 : -1} onClick={() => setTab('gacha')}>
             <span lang="ja">ガチャ</span>Gachapon
           </button>
         </div>

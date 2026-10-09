@@ -14,7 +14,7 @@
   --accent: #c9a86a;
   --accent-ink: #26303d;
   --soft: rgba(239, 230, 214, 0.1);
-  --shu: #c25a47;
+  --shu: #a8432f;
   --shu-ink: #fbf1e4;
   --good: #8fb07f;
   --bad: #e08a7e;
@@ -736,11 +736,11 @@ body { font-size: 17px; line-height: 1.65; }
 .book-tabs { position: absolute; top: -34px; right: 64px; display: flex; gap: 6px; z-index: 1; }
 .tab {
   display: flex; align-items: baseline; gap: 8px; padding: 8px 18px 14px; min-height: 44px; cursor: pointer; border: 0;
-  font-family: var(--hand); font-weight: 500; font-size: 16px; color: #f6ecd9; background: var(--washi), #5b6f92;
+  font-family: var(--hand); font-weight: 500; font-size: 16px; color: #f6ecd9; background: var(--washi), #4a5c7d;
   border-radius: 10px 14px 0 0 / 12px 10px 0 0; box-shadow: inset 0 -6px 8px -6px rgba(0, 0, 0, 0.35);
   transform: translateY(6px); transition: transform 0.2s ease;
 }
-.tab.practice { background: var(--washi), #b8604d; border-radius: 14px 10px 0 0 / 10px 12px 0 0; }
+.tab.practice { background: var(--washi), #9b4535; border-radius: 14px 10px 0 0 / 10px 12px 0 0; }
 .tab [lang] { font-family: var(--f-display); font-weight: 700; font-size: 17px; }
 .tab:hover { transform: translateY(2px); }
 .tab[aria-selected='true'] { background: var(--washi), var(--paper); color: #33281f; transform: none; box-shadow: none; }
@@ -1110,7 +1110,7 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
 
 /* a spot waiting for its sticker: a softly pulsing halo */
 .slot.pending .ghost.halo {
-  opacity: 1; filter: none; mix-blend-mode: normal; border-radius: 50%; outline: 2px dashed rgba(194, 90, 71, 0.55); outline-offset: 4px;
+  opacity: 1; filter: none; mix-blend-mode: normal; border-radius: 50%; outline: 2px dashed rgba(168, 67, 47, 0.55); outline-offset: 4px;
   box-shadow: 0 0 0 10px rgba(242, 200, 78, 0.18), 0 0 26px 10px rgba(242, 200, 78, 0.35); animation: halo 2s ease-in-out infinite;
 }
 .slot.pending .ghost.halo .sticker-art { opacity: 0.18; filter: grayscale(1); }
@@ -1157,7 +1157,7 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
 .capsule-ghost { width: 88px; height: 88px; display: grid; place-items: center; border-radius: 50%; outline: 1.5px dashed rgba(78, 52, 26, 0.3); outline-offset: 2px; font-family: var(--f-display); font-size: 40px; color: var(--muted); }
 .capsule-ghost .sticker-art { opacity: 0.2; filter: grayscale(1); }
 .capsule-slot .count { font-family: var(--hand); color: var(--muted); }
-.capsule-slot .rarity { font-family: var(--hand); font-size: 12px; color: #8f6a2c; }
+.capsule-slot .rarity { font-family: var(--hand); font-size: 12px; color: #765720; }
 .capsule-slot.super .rarity { color: var(--shu); }
 .capsule-slot.have.super { background: radial-gradient(circle at 50% 40%, rgba(242, 200, 78, 0.35), transparent 65%); }
 .purse-small { font-family: var(--hand); font-size: 14px; color: var(--muted); margin: 4px 0; }
@@ -1219,7 +1219,7 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
 @keyframes idle-wobble { 0%, 60%, 100% { transform: none; } 70% { transform: rotate(-10deg); } 80% { transform: rotate(8deg); } 90% { transform: rotate(-4deg); } }
 .dropped-capsule:hover .roll, .dropped-capsule:focus-visible .roll { animation: idle-wobble 0.6s ease-in-out infinite; }
 .tap-hint { font-family: var(--hand); font-size: 11px; fill: #65533f; animation: fade 0.4s 0.9s both; }
-.gacha-collection .capsule-ghost.halo { opacity: 1; outline: 2px dashed rgba(194, 90, 71, 0.55); box-shadow: 0 0 0 10px rgba(242, 200, 78, 0.18), 0 0 26px 10px rgba(242, 200, 78, 0.35); animation: halo 2s ease-in-out infinite; }
+.gacha-collection .capsule-ghost.halo { opacity: 1; outline: 2px dashed rgba(168, 67, 47, 0.55); box-shadow: 0 0 0 10px rgba(242, 200, 78, 0.18), 0 0 26px 10px rgba(242, 200, 78, 0.35); animation: halo 2s ease-in-out infinite; }
 .capsule-slot.target .capsule-ghost.halo { outline-color: var(--shu); }
 
 /* the capsule opening: halves shake, then burst apart in confetti and petals */
@@ -1280,7 +1280,7 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
 /* series chips: the English name, with its Japanese name beside it */
 .series-chip .chip-text { display: inline-flex; align-items: baseline; gap: 6px; }
 .series-chip .en { font-family: var(--f-display); font-weight: 600; font-size: 15px; font-variation-settings: 'SOFT' 100, 'WONK' 1; }
-.series-chip .jp { font-family: 'Shippori Mincho', serif; font-size: 12px; color: #84715a; }
+.series-chip .jp { font-family: 'Shippori Mincho', serif; font-size: 12px; color: #6b5a45; }
 .series-shelf { gap: 8px 10px; max-width: 520px; }
 
 /* an open note (sticker, page number, seal…) must sit above the index tabs and page-turn tabs */
@@ -1500,7 +1500,7 @@ body {
 @keyframes hunt { 50% { box-shadow: 0 0 0 6px rgba(227, 176, 75, 0.12); } }
 .hunt-note { margin: 10px 0 0; font-family: var(--hand); font-size: 15px; color: #65533f; }
 .hunt-star { color: #c79a3a; letter-spacing: -0.1em; margin-right: 4px; }
-.hunt-link { border: 0; background: none; padding: 0; font: inherit; color: var(--shu); cursor: pointer; text-decoration: underline; text-decoration-style: wavy; text-decoration-color: rgba(194, 90, 71, 0.4); text-underline-offset: 4px; }
+.hunt-link { border: 0; background: none; padding: 0; font: inherit; color: var(--shu); cursor: pointer; text-decoration: underline; text-decoration-style: wavy; text-decoration-color: rgba(168, 67, 47, 0.4); text-underline-offset: 4px; }
 .hunt-link:hover { text-decoration-color: var(--shu); }
 
 /* ---------- the desk under the book: a real photograph, chosen in Settings (src/lib/desk.ts) ----------
@@ -1543,7 +1543,7 @@ html[data-tone='light'] .appbar { background: linear-gradient(rgba(250, 246, 236
 .desk-swatch { background-size: cover; background-position: center; }
 .mini-book { width: 54%; height: 52%; border-radius: 2px; background: linear-gradient(90deg, #efe5cb 48%, #d8caa8 50%, #efe5cb 52%); box-shadow: 0 6px 10px -4px rgba(0, 0, 0, 0.6); }
 .desk-pick[aria-checked='true'] .desk-swatch { outline-color: var(--shu); }
-.desk-pick:hover .desk-swatch { outline-color: rgba(194, 90, 71, 0.4); }
+.desk-pick:hover .desk-swatch { outline-color: rgba(168, 67, 47, 0.4); }
 .desk-name { font-family: var(--f-display); font-weight: 600; font-size: 15px; margin-top: 6px; }
 .desk-name [lang] { color: var(--shu); font-size: 0.85em; margin-right: 2px; }
 .desk-note { font-family: var(--hand); font-size: 13px; color: #65533f; line-height: 1.35; }
@@ -1587,3 +1587,29 @@ html[data-tone='light'] .appbar { background: linear-gradient(rgba(250, 246, 236
 /* words written straight on a photo get a soft halo, so they stay legible over its pattern */
 html[data-tone='dark'] :is(.review-bar, .lesson-bar, .next-up-h, .sec-h, .appbar nav, .purse, .stats, .tally, .review-settings, .foot) { text-shadow: 0 1px 2px rgba(5, 10, 20, 0.85), 0 0 12px rgba(5, 10, 20, 0.6); }
 html[data-tone='light'] :is(.review-bar, .lesson-bar, .next-up-h, .sec-h, .appbar nav, .purse, .stats, .tally, .review-settings, .foot) { text-shadow: 0 0 2px rgba(250, 246, 236, 0.9), 0 0 12px rgba(250, 246, 236, 0.85); }
+
+/* ---------- accessibility ----------
+   The lesson's character and reading are the page's h1. */
+h1.lesson-id { margin: 0; font: inherit; }
+
+/* Words written straight on a photograph: the photo has no single colour to measure against, so each glyph gets a
+   solid halo (WCAG technique G18 measures the text against the halo). Dark desks: an almost opaque ink halo under
+   light text; the light desk: a paper-coloured halo under dark ink. Muted text is a touch brighter on dark desks. */
+html[data-tone='dark'] { --muted: #cdc5b4; }
+html[data-tone='dark'] :is(.review-bar, .lesson-bar, .next-up-h, .sec-h, .appbar nav, .purse, .stats, .tally, .review-settings, .foot, .hunt-note, .chart-sec) {
+  text-shadow: 0 0 1px rgba(6, 10, 20, 0.95), 0 0 2px rgba(6, 10, 20, 0.95), 0 0 4px rgba(6, 10, 20, 0.85), 0 1px 10px rgba(6, 10, 20, 0.7);
+}
+html[data-tone='light'] :is(.review-bar, .lesson-bar, .next-up-h, .sec-h, .appbar nav, .purse, .stats, .tally, .review-settings, .foot, .hunt-note, .chart-sec) {
+  text-shadow: 0 0 1px rgba(250, 246, 236, 1), 0 0 2px rgba(250, 246, 236, 1), 0 0 5px rgba(250, 246, 236, 0.9), 0 0 14px rgba(250, 246, 236, 0.8);
+}
+/* the paper-backed parts inside those areas don't need a halo */
+:is(.next-up li, .chart-scroll, .daisen, .spread) { text-shadow: none; }
+/* page titles on the desk: a soft pool of shade behind them as well, so the biggest words never sit on a bright patch */
+html[data-tone='dark'] :is(.review-bar h1, .lesson-id .k, .next-up-h, .chart-sec .sec-h h2) {
+  background: radial-gradient(closest-side, rgba(6, 10, 20, 0.55), transparent); padding-inline: 10px; margin-inline: -10px;
+}
+html[data-tone='light'] :is(.review-bar h1, .lesson-id .k, .next-up-h, .chart-sec .sec-h h2) {
+  background: radial-gradient(closest-side, rgba(250, 246, 236, 0.75), transparent); padding-inline: 10px; margin-inline: -10px;
+}
+/* browsers turn text-shadow off on buttons; let the ones written on the desk inherit the halo */
+:is(.review-bar, .lesson-bar, .appbar nav, .purse, .stats, .review-settings, .hunt-note) button { text-shadow: inherit; }
