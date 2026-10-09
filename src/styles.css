@@ -1357,3 +1357,30 @@ body {
 .opt:disabled:not(.right):not(.wrong) { opacity: 0.6; }
 @media (max-width: 640px) { .icon-btn.help, .icon-btn.help:hover { transform: none; } }
 .review-bar h1::after { content: none; }
+
+/* the text page is printed straight onto the paper: only the picture gets a woodblock frame */
+.spread .info::before { content: none; }
+.spread .info { padding-inline: 8px 28px; }
+/* facts as quiet margin notes, not a ruled data sheet */
+.spread .facts > div { background: none; padding-top: 0; }
+.spread .facts { gap: 18px 28px; }
+.spread .facts dt { font-size: 14px; opacity: 0.85; }
+/* the main action is written in sumi ink, the same ink as the text */
+.btn.primary::before { background: #2f2721; }
+.btn.primary, .spread .btn.primary { color: #f6eedd; }
+/* practice steps: a pencilled list with kanji numerals, the current step underlined in brush */
+.steps { gap: 4px 22px; }
+.steps li, .steps li.on {
+  border: 0; border-radius: 0; padding: 4px 2px 8px; gap: 6px; font-size: 16px; position: relative; background: none;
+}
+.steps li::before, .steps li.on::before, .steps li.ok::before {
+  content: counter(st, cjk-decimal); width: auto; height: auto; border-radius: 0; background: none;
+  font-family: 'Shippori Mincho', serif; font-size: 15px; font-weight: 700; color: var(--muted);
+}
+.steps li.on::before { color: var(--shu); }
+.steps li.on::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 7px; background: var(--shu);
+  -webkit-mask: var(--brush) no-repeat center / 100% 100%; mask: var(--brush) no-repeat center / 100% 100%;
+}
+.steps li.ok { color: var(--good); }
+.steps li.ok::before { content: '✓'; color: var(--good); font-family: var(--hand); }
