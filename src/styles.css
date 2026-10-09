@@ -1423,3 +1423,9 @@ body {
 .capsule-open, .capsule-ghost { box-sizing: border-box; width: 96px; height: 96px; flex: none; display: grid; place-items: center; line-height: 0; margin-bottom: 8px; }
 .capsule-ghost { outline-offset: -4px; line-height: 1; }
 .capsule-open .sticker-art { display: block; }
+
+/* "Almost there": say what the slips are and how far along each one is */
+.next-up-h { font-family: var(--f-display); font-weight: 600; font-size: 20px; margin: 0 0 18px; }
+.next-up-h span { font-family: var(--hand); font-weight: 500; font-size: 16px; color: var(--muted); }
+.next-up li .nu-count { display: block; margin-top: 4px; font-family: var(--hand); font-size: 14px; color: #65533f; }
+.next-up li .nu-count b { display: inline; font-family: var(--f-display); font-size: 15px; color: #33281f; }

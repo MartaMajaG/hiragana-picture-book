@@ -86,24 +86,35 @@ export default function Album({ progress, onOpenPurse, placing, onPlace, onPlace
       </div>
 
       {next.length > 0 && (
-        <ul className="next-up" aria-label="Closest stickers">
-          {next.map(({ s, g }) => (
-            <li key={s.id}>
-              <span className="nu-art">
-                <StickerArt id={s.id} size={76} tilt={tiltFor(s.id)} />
-              </span>
-              <span className="nu-text">
-                <b>
-                  <span lang="ja">{s.jp}</span> {s.name}
-                </b>{' '}
-                {s.how}
-                <span className="bar" role="img" aria-label={`${Math.min(g[0], g[1])} of ${g[1]}`}>
-                  <span style={{ width: `${Math.min(100, (g[0] / g[1]) * 100)}%` }} />
-                </span>
-              </span>
-            </li>
-          ))}
-        </ul>
+        <section className="next-up-sec" aria-labelledby="next-up-h">
+          <h2 id="next-up-h" className="next-up-h">
+            Almost there <span>· the stickers you’re closest to earning</span>
+          </h2>
+          <ul className="next-up">
+            {next.map(({ s, g }) => {
+              const have = Math.min(g[0], g[1]);
+              return (
+                <li key={s.id}>
+                  <span className="nu-art">
+                    <StickerArt id={s.id} size={76} tilt={tiltFor(s.id)} />
+                  </span>
+                  <span className="nu-text">
+                    <b>
+                      <span lang="ja">{s.jp}</span> {s.name}
+                    </b>{' '}
+                    {s.how}
+                    <span className="bar" aria-hidden="true">
+                      <span style={{ width: `${Math.min(100, (g[0] / g[1]) * 100)}%` }} />
+                    </span>
+                    <span className="nu-count">
+                      <b>{have}</b> of {g[1]} · {g[1] - have} to go
+                    </span>
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
       )}
 
       <div className="book">
