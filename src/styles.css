@@ -1419,3 +1419,7 @@ body {
 /* room for the torn bottom edge, so the last row of buttons never touches it */
 .capsule-card { padding: 28px 28px 40px; max-height: 90vh; }
 .cc-actions { padding-bottom: 4px; }
+/* owned stickers and empty spots share one box, so every name and rarity line sits on the same baseline */
+.capsule-open, .capsule-ghost { box-sizing: border-box; width: 96px; height: 96px; flex: none; display: grid; place-items: center; line-height: 0; margin-bottom: 8px; }
+.capsule-ghost { outline-offset: -4px; line-height: 1; }
+.capsule-open .sticker-art { display: block; }

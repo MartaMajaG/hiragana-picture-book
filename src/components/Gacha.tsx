@@ -224,7 +224,7 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
                 )}
                 <span className="slot-jp" lang="ja">{n || isTarget || c.rarity !== 'super' ? c.jp : '？'}</span>
                 <span className="slot-name">
-                  {n || isTarget || c.rarity !== 'super' ? c.name : 'Super rare'}
+                  {n || isTarget || c.rarity !== 'super' ? c.name : 'Mystery capsule'}
                   {n > 1 && <span className="count"> ×{n}</span>}
                 </span>
                 {c.rarity !== 'common' && <span className="rarity">{RARITY_LABEL[c.rarity]}</span>}
