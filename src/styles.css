@@ -1277,6 +1277,12 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
 .series-complete .seal { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 5px; background: var(--shu); color: var(--shu-ink); font-family: 'Shippori Mincho', serif; font-weight: 800; font-size: 18px; transform: rotate(-6deg); }
 .series-complete b { color: #3f7a37; }
 
+/* series chips: the English name, with its Japanese name beside it */
+.series-chip .chip-text { display: inline-flex; align-items: baseline; gap: 6px; }
+.series-chip .en { font-family: var(--f-display); font-weight: 600; font-size: 15px; font-variation-settings: 'SOFT' 100, 'WONK' 1; }
+.series-chip .jp { font-family: 'Shippori Mincho', serif; font-size: 12px; color: #84715a; }
+.series-shelf { gap: 8px 10px; max-width: 520px; }
+
 @media (prefers-reduced-motion: reduce) { .lift.on .sticker-art, .lift.pressed .sticker-art { transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {

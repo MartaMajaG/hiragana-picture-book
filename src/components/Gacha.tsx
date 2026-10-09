@@ -107,7 +107,10 @@ export default function Gacha({ progress, onPull, onPlaced }: Props) {
                 title={open ? x.name : `Complete ${SERIES[i - 1].name} to unlock`}
               >
                 <span className="dot" aria-hidden="true">{done ? '✓' : open ? '' : '🔒'}</span>
-                <span lang="ja">{x.jp}</span>
+                <span className="chip-text">
+                  <span className="en">{x.name}</span>
+                  <span className="jp" lang="ja">{x.jp}</span>
+                </span>
               </button>
             );
           })}
