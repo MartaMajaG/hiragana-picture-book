@@ -14,7 +14,7 @@ interface AlbumProps {
   placing: string | null;
   onPlace: (id: string | null) => void;
   onPlaced: (id: string) => void;
-  onPull: () => { capsule: Capsule; isNew: boolean } | null;
+  onPull: (seriesId: string) => { capsule: Capsule; isNew: boolean } | null;
   onCapsulePlaced: (id: string) => void;
   /** Which page of the sticker book is open: the album or the gachapon. */
   tab: 'album' | 'gacha';

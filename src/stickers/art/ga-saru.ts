@@ -1,0 +1,16 @@
+// Sticker: a Japanese snow monkey soaking in an onsen: red face, eyes blissfully closed, a little cap of snow on its head, steam wisps rising, rocks around the pool.
+export default `<path d="M22,64 C17.6,59 24.6,55 21.4,49.6 C19.6,46.4 21,43 23.6,41.4 M78,64 C82.4,59 75.4,55 78.6,49.6 C80.4,46.4 79,43 76.4,41.4" fill="none" stroke="#CFE3EA" stroke-width="4.6" stroke-linecap="round"/>
+<ellipse cx="50" cy="70" rx="38" ry="12.4" fill="#A8DDE0"/><path d="M80,62.6 C86,65 88,67.4 88,70 C88,76.6 71,82.4 50,82.4 C44,82.4 38,82 33,81 C60,80 80,74 80,62.6Z" fill="#7EC4CA"/>
+<path d="M30,72 C29,60 38,53 50,53 C62,53 71,60 70,72Z" fill="#A8957E"/><path d="M62,55.6 C67,59 70,64 70,72 L63.6,72 C64.4,65 64,60 62,55.6Z" fill="#8C7A64"/>
+<circle cx="32.6" cy="42" r="6" fill="#A8957E"/><circle cx="67.4" cy="42" r="6" fill="#8C7A64"/><circle cx="50" cy="38" r="19" fill="#A8957E"/><path d="M63,24.4 C67,28 69,33 69,38 C69,48 61,57 50,57 C47,57 44.4,56.4 42,55.4 C58,54 67,42 63,24.4Z" fill="#8C7A64"/>
+<path d="M50,30.6 C54,25.6 63,27.4 63,35.4 C63,45 57,51 50,51 C43,51 37,45 37,35.4 C37,27.4 46,25.6 50,30.6Z" fill="#E8857A"/><path d="M61.2,30 C62.6,31.8 63,33.6 63,35.4 C63,45 57,51 50,51 C48,51 46.2,50.6 44.6,50 C55,48 61,42 61.2,30Z" fill="#D06A60"/>
+<path d="M41,37 Q44.4,40.4 47.8,37 M52.2,37 Q55.6,40.4 59,37" fill="none" stroke="#2E2A22" stroke-width="1.8" stroke-linecap="round"/>
+<circle cx="48.6" cy="43.2" r=".9" fill="#2E2A22"/><circle cx="51.4" cy="43.2" r=".9" fill="#2E2A22"/><path d="M46.6,46.8 Q50,49 53.4,46.8" fill="none" stroke="#2E2A22" stroke-width="1.4" stroke-linecap="round"/>
+<ellipse cx="40.6" cy="43.6" rx="3" ry="1.9" fill="#F7B9B0"/><ellipse cx="59.4" cy="43.6" rx="3" ry="1.9" fill="#F7B9B0"/>
+<path d="M36.6,25 C37,19.6 42,16.4 46,17.4 C48,14.4 53.6,14.4 55.6,17.4 C60,16.6 64,20 63.4,25 C60.6,27 57,26 54.4,27.2 C51.4,25.8 48.4,27.6 45.4,26.6 C42,27.8 38.4,27.4 36.6,25Z" fill="#EEF5F8"/><path d="M63.4,25 C60.6,27 57,26 54.4,27.2 C51.4,25.8 48.4,27.6 45.4,26.6 C42,27.8 38.4,27.4 36.6,25 C42,24.2 47,24.6 52,23.4 C56,22.4 60,21.6 62.6,21.4 C63.2,22.6 63.5,23.8 63.4,25Z" fill="#C4D6E0"/><path d="M40.6,21.6 C41.6,19.6 43.4,18.6 45.4,18.6" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+<path d="M33,71.6 Q36.6,69.6 40.2,71.6 M59.8,71.6 Q63.4,69.6 67,71.6 M20,72 Q24,70.4 27,72 M73,72 Q76,70.4 80,72" fill="none" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+<ellipse cx="17.4" cy="79.4" rx="9" ry="6.6" fill="#9AA0AA"/><ellipse cx="16.4" cy="78.4" rx="8.4" ry="6" fill="#C9CDD4"/><ellipse cx="83.6" cy="79.4" rx="9" ry="6.6" fill="#9AA0AA"/><ellipse cx="82.6" cy="78.4" rx="8.4" ry="6" fill="#B9BEC7"/>
+<ellipse cx="32" cy="85" rx="10" ry="6.6" fill="#9AA0AA"/><ellipse cx="31" cy="84" rx="9.4" ry="6" fill="#C9CDD4"/><ellipse cx="68" cy="85" rx="10" ry="6.6" fill="#9AA0AA"/><ellipse cx="67" cy="84" rx="9.4" ry="6" fill="#B9BEC7"/>
+<ellipse cx="50" cy="87" rx="11" ry="6.4" fill="#9AA0AA"/><ellipse cx="49" cy="86" rx="10.4" ry="5.8" fill="#C9CDD4"/>
+<path d="M12,76.6 C13,75 15,74 17,73.8 M26,81.6 C27.4,80 29.6,79.2 32,79.2 M43.6,83.4 C45,82 47,81.4 49,81.4" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+<path d="M33.4,36 C33.8,31 36.4,27 40,24.8" fill="none" stroke="#FFF4EE" stroke-width="1.5" stroke-linecap="round"/>`;

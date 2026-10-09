@@ -1,0 +1,12 @@
+// Sticker: a festival taiko drum on a small wooden stand: a red-brown barrel with a ring of iron studs and a pale hide head with a happy face, two bachi sticks crossed in front.
+export default `<path d="M38,66 L25,92 M62,66 L75,92" stroke="#8A5A34" stroke-width="5.4" stroke-linecap="round"/><path d="M29.4,84 L70.6,84" stroke="#8A5A34" stroke-width="4" stroke-linecap="round"/><path d="M64.6,70 L75,91" stroke="#6E4426" stroke-width="2" stroke-linecap="round"/>
+<circle cx="50" cy="45" r="31" fill="#C0612F"/><path d="M71.9,23.1 A31,31 0 0 1 28.1,66.9 A34,34 0 0 0 71.9,23.1Z" fill="#984020"/>
+<circle cx="50" cy="45" r="25" fill="#F3E4C4"/><path d="M67.7,27.3 A25,25 0 0 1 32.3,62.7 A28,28 0 0 0 67.7,27.3Z" fill="#DDC9A0"/>
+<g fill="#3A2E28"><circle cx="50" cy="17" r="1.4"/><circle cx="62.1" cy="19.8" r="1.4"/><circle cx="71.9" cy="27.5" r="1.4"/><circle cx="77.3" cy="38.8" r="1.4"/><circle cx="77.3" cy="51.2" r="1.4"/><circle cx="71.9" cy="62.5" r="1.4"/><circle cx="62.1" cy="70.2" r="1.4"/><circle cx="50" cy="73" r="1.4"/><circle cx="37.9" cy="70.2" r="1.4"/><circle cx="28.1" cy="62.5" r="1.4"/><circle cx="22.7" cy="51.2" r="1.4"/><circle cx="22.7" cy="38.8" r="1.4"/><circle cx="28.1" cy="27.5" r="1.4"/><circle cx="37.9" cy="19.8" r="1.4"/></g>
+<ellipse cx="43.6" cy="44" rx="2.6" ry="3.4" fill="#2E2A22"/><ellipse cx="56.4" cy="44" rx="2.6" ry="3.4" fill="#2E2A22"/><circle cx="42.8" cy="42.8" r=".9" fill="#fff"/><circle cx="55.6" cy="42.8" r=".9" fill="#fff"/>
+<path d="M46.6,48.6 Q50,52 53.4,48.6" fill="none" stroke="#2E2A22" stroke-width="1.5" stroke-linecap="round"/>
+<ellipse cx="38.6" cy="50" rx="3.2" ry="2" fill="#F2A7A0"/><ellipse cx="61.4" cy="50" rx="3.2" ry="2" fill="#F2A7A0"/>
+<path d="M30,36 C32,29.6 37,24.6 43,22.6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round"/><path d="M22.4,30 C24,26.6 26.4,23.6 29.4,21.2" fill="none" stroke="#E0905E" stroke-width="2" stroke-linecap="round"/>
+<path d="M28,92 L70,62" stroke="#D2AE84" stroke-width="4.6" stroke-linecap="round"/><path d="M29,93 L71,63" stroke="#B48B62" stroke-width="1.6" stroke-linecap="round"/>
+<path d="M72,92 L30,62" stroke="#D2AE84" stroke-width="4.6" stroke-linecap="round"/><path d="M73,91 L31,61" stroke="#B48B62" stroke-width="1.6" stroke-linecap="round"/>
+<circle cx="70" cy="62" r="3.2" fill="#E2C48E"/><circle cx="30" cy="62" r="3.2" fill="#E2C48E"/><path d="M28.4,60.6 L30,59.6 M68.4,60.6 L70,59.6" stroke="#fff" stroke-width="1.2" stroke-linecap="round"/>`;

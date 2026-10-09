@@ -7,7 +7,7 @@ import Review from './views/Review';
 import Album from './views/Album';
 import NewSticker from './components/NewSticker';
 import CoinPurse from './components/CoinPurse';
-import { balance, pull } from './data/gacha';
+import { SERIES, balance, pull } from './data/gacha';
 import { KANA, kanaIndex } from './data/kana';
 import { STICKERS, newlyEarned } from './data/stickers';
 import { MON, currentStreak, loadProgress, saveProgress, touchDay, type Progress } from './lib/progress';
@@ -204,8 +204,9 @@ export default function App() {
             placing={placing}
             onPlace={setPlacing}
             onCapsulePlaced={(id) => setProgress((p) => ({ ...p, capsuleToStick: p.capsuleToStick.filter((x) => x !== id) }))}
-            onPull={() => {
-              const r = pull(progress);
+            onPull={(seriesId) => {
+              const x = SERIES.find((y) => y.id === seriesId);
+              const r = x && pull(progress, x);
               if (!r) return null;
               setProgress(r.next);
               return { capsule: r.capsule, isNew: r.isNew };

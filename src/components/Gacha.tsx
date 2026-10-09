@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import StickerArt, { tiltFor } from './StickerArt';
 import Placement from './Placement';
-import { CAPSULES, DUPLICATE_REFUND, GACHA_COST, balance, type Capsule } from '../data/gacha';
+import { CAPSULES, DUPLICATE_REFUND, GACHA_COST, SERIES, balance, seriesDone, seriesOpen, type Capsule } from '../data/gacha';
 import { CAPSULE, MACHINE } from '../gacha/machine';
 import { pastelize } from '../lib/illustration';
 import { prefersReducedMotion } from '../lib/motion';
@@ -19,7 +19,7 @@ const TURN_MS = 1500;
 
 interface Props {
   progress: Progress;
-  onPull: () => { capsule: Capsule; isNew: boolean } | null;
+  onPull: (seriesId: string) => { capsule: Capsule; isNew: boolean } | null;
   onPlaced: (id: string) => void;
 }
 
@@ -31,19 +31,22 @@ export default function Gacha({ progress, onPull, onPlaced }: Props) {
   const [phase, setPhase] = useState<Phase>('idle');
   const [result, setResult] = useState<{ capsule: Capsule; isNew: boolean } | null>(null);
   const [placingId, setPlacingId] = useState<string | null>(null);
+  // open on the newest series that's unlocked and not yet complete
+  const [si, setSi] = useState(() => {
+    const open = SERIES.map((_, i) => i).filter((i) => seriesOpen(progress, i));
+    return open.find((i) => !seriesDone(progress, SERIES[i])) ?? open[open.length - 1];
+  });
+  const series = SERIES[si];
   const timers = useRef<number[]>([]);
   useEffect(() => () => timers.current.forEach(clearTimeout), []);
   const later = (ms: number, f: () => void) => timers.current.push(window.setTimeout(f, prefersReducedMotion() ? 0 : ms));
 
-  const art = useMemo(
-    () => ({
-      back: pastelize(MACHINE.back),
-      capsules: pastelize(MACHINE.capsules),
-      front: pastelize(MACHINE.front),
-      handle: pastelize(MACHINE.handle),
-    }),
-    [],
-  );
+  // each series has its own machine colour: swap the body reds
+  const art = useMemo(() => {
+    const [m, sh, d] = series.machine;
+    const tint = (svg: string) => pastelize(svg.replace(/#D9473A/gi, m).replace(/#B0342C/gi, sh).replace(/#8E2A24/gi, d));
+    return { back: tint(MACHINE.back), capsules: tint(MACHINE.capsules), front: tint(MACHINE.front), handle: tint(MACHINE.handle) };
+  }, [series]);
   const [hx, hy] = MACHINE.handleCenter;
   const [cx, cy] = MACHINE.chuteExit;
   const money = balance(progress);
@@ -52,11 +55,13 @@ export default function Gacha({ progress, onPull, onPlaced }: Props) {
   // Until it's opened and stuck in, the collection doesn't give away what was in the capsule.
   const hidden = result && phase !== 'idle' ? result.capsule.id : null;
   const count = (id: string) => (progress.capsules[id] ?? 0) - (id === hidden && result?.isNew ? 1 : 0);
-  const owned = CAPSULES.filter((c) => count(c.id) > 0).length;
+  const owned = series.capsules.filter((c) => count(c.id) > 0).length;
+  const complete = phase === 'idle' && seriesDone(progress, series);
+  const nextSeries = SERIES[si + 1];
 
   const turn = () => {
     if (phase !== 'idle' || !canPay) return;
-    const r = onPull();
+    const r = onPull(series.id);
     if (!r) return;
     setResult(r);
     setPhase('coin');
@@ -85,7 +90,31 @@ export default function Gacha({ progress, onPull, onPlaced }: Props) {
         <h2>
           <span lang="ja">ガチャ</span> Gachapon
         </h2>
-        <p className="gacha-intro">Spend your mon on a capsule. Each one holds a sticker from the sweets and snacks series.</p>
+        <div className="series-shelf" role="tablist" aria-label="Capsule series">
+          {SERIES.map((x, i) => {
+            const open = seriesOpen(progress, i);
+            const done = seriesDone(progress, x);
+            return (
+              <button
+                key={x.id}
+                type="button"
+                role="tab"
+                aria-selected={i === si}
+                disabled={!open || phase !== 'idle'}
+                className={`series-chip${done ? ' done' : ''}${open ? '' : ' locked'}`}
+                style={{ ['--machine' as string]: x.machine[0] } as React.CSSProperties}
+                onClick={() => setSi(i)}
+                title={open ? x.name : `Complete ${SERIES[i - 1].name} to unlock`}
+              >
+                <span className="dot" aria-hidden="true">{done ? '✓' : open ? '' : '🔒'}</span>
+                <span lang="ja">{x.jp}</span>
+              </button>
+            );
+          })}
+        </div>
+        <p className="gacha-intro">
+          Spend your mon on a capsule. Each one holds a sticker from the <b>{series.name}</b> series.
+        </p>
         <svg className={`machine ${phase}`} viewBox="0 0 200 320" role="img" aria-label="A gachapon capsule machine">
           <g className="machine-body">
             <g dangerouslySetInnerHTML={{ __html: art.back }} />
@@ -143,13 +172,34 @@ export default function Gacha({ progress, onPull, onPlaced }: Props) {
 
       <div className="gacha-collection">
         <h2>
-          <span lang="ja">お菓子</span> Sweets &amp; snacks
+          <span lang="ja">{series.jp}</span> {series.name}
         </h2>
         <p className="gacha-intro">
-          {owned} of {CAPSULES.length} collected. Rare capsules turn up less often.
+          {owned} of {series.capsules.length} collected. Rare capsules turn up less often.
+          {nextSeries && !complete && ` Complete it to unlock ${nextSeries.name}.`}
         </p>
+        {complete && (
+          <div className="series-complete">
+            <span className="seal" lang="ja" aria-hidden="true">完</span>
+            <span>
+              <b>Series complete!</b>{' '}
+              {nextSeries ? (
+                <>
+                  <span lang="ja">{nextSeries.jp}</span> {nextSeries.name} is now open.
+                </>
+              ) : (
+                'You have collected every capsule. おめでとう!'
+              )}
+            </span>
+            {nextSeries && (
+              <button type="button" className="btn small" onClick={() => setSi(si + 1)}>
+                Go to {nextSeries.name} →
+              </button>
+            )}
+          </div>
+        )}
         <div className="capsule-grid">
-          {CAPSULES.map((c) => {
+          {series.capsules.map((c) => {
             const n = count(c.id);
             const waiting = progress.capsuleToStick.includes(c.id) && n > 0;
             const isTarget = placingId === c.id;

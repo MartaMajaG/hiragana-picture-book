@@ -1256,6 +1256,27 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
 .nu-text .bar { margin-top: 10px; max-width: 260px; }
 .album .book { margin-top: 44px; }
 
+/* gachapon series shelf and completion */
+.series-shelf { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 12px 0 2px; }
+.series-chip {
+  display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px 6px 6px; min-height: 38px; cursor: pointer;
+  border: 1.5px solid rgba(78, 52, 26, 0.25); border-radius: 999px; background: rgba(255, 251, 238, 0.5); color: #33281f;
+  font-family: 'Shippori Mincho', serif; font-weight: 700; font-size: 15px;
+}
+.series-chip .dot { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--machine); color: #fff; font-size: 12px; }
+.series-chip[aria-selected='true'] { border-color: var(--machine); box-shadow: 0 0 0 2px color-mix(in srgb, var(--machine) 35%, transparent); background: #fbf4e4; }
+.series-chip.locked { opacity: 0.55; cursor: not-allowed; }
+.series-chip.locked .dot { background: rgba(78, 52, 26, 0.25); font-size: 11px; }
+.series-chip:disabled:not(.locked) { cursor: default; }
+.gacha-intro b { color: #33281f; }
+.series-complete {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 0 0 18px; padding: 12px 14px;
+  border-radius: 10px; background: rgba(108, 150, 92, 0.14); border: 1.5px solid rgba(84, 128, 72, 0.4); font-family: var(--hand); font-size: 15px;
+  animation: drop 0.4s ease-out both;
+}
+.series-complete .seal { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 5px; background: var(--shu); color: var(--shu-ink); font-family: 'Shippori Mincho', serif; font-weight: 800; font-size: 18px; transform: rotate(-6deg); }
+.series-complete b { color: #3f7a37; }
+
 @media (prefers-reduced-motion: reduce) { .lift.on .sticker-art, .lift.pressed .sticker-art { transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {
