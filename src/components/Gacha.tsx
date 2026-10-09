@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import StickerArt, { tiltFor } from './StickerArt';
 import Placement from './Placement';
-import { CAPSULES, DUPLICATE_REFUND, GACHA_COST, SERIES, balance, seriesDone, seriesOpen, type Capsule } from '../data/gacha';
+import { CAPSULES, TRADE_VALUE, GACHA_COST, SERIES, balance, seriesDone, seriesOpen, type Capsule } from '../data/gacha';
 import { CAPSULE, MACHINE } from '../gacha/machine';
 import { pastelize } from '../lib/illustration';
 import { prefersReducedMotion } from '../lib/motion';
@@ -21,13 +21,15 @@ interface Props {
   progress: Progress;
   onPull: (seriesId: string) => { capsule: Capsule; isNew: boolean } | null;
   onPlaced: (id: string) => void;
+  /** Trade one spare copy of a capsule sticker back for mon. */
+  onTrade: (id: string) => void;
 }
 
 /**
  * The gachapon page of the sticker book: a capsule machine on the left page, the capsule series on the right.
  * Pay 30 mon, turn the handle, tap the capsule to open it, then stick the sticker onto its glowing spot.
  */
-export default function Gacha({ progress, onPull, onPlaced }: Props) {
+export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
   const [phase, setPhase] = useState<Phase>('idle');
   const [result, setResult] = useState<{ capsule: Capsule; isNew: boolean } | null>(null);
   const [placingId, setPlacingId] = useState<string | null>(null);
@@ -169,7 +171,7 @@ export default function Gacha({ progress, onPull, onPlaced }: Props) {
             <span className="coin-dot" lang="ja" aria-hidden="true">文</span>
             {canPay ? `You have ${money} mon to spend.` : `You have ${money} mon. ${GACHA_COST - money} more to turn the handle.`}
           </p>
-          <p className="gacha-small">Got one already? You get {DUPLICATE_REFUND} mon back.</p>
+          <p className="gacha-small">Got one already? Keep the spare, or trade it back for mon.</p>
         </div>
       </div>
 
@@ -221,6 +223,11 @@ export default function Gacha({ progress, onPull, onPlaced }: Props) {
                   {n > 1 && <span className="count"> ×{n}</span>}
                 </span>
                 {c.rarity !== 'common' && <span className="rarity">{RARITY_LABEL[c.rarity]}</span>}
+                {n > 1 && !waiting && phase === 'idle' && (
+                  <button type="button" className="btn small trade" onClick={() => onTrade(c.id)} aria-label={`Trade a spare ${c.name} for ${TRADE_VALUE[c.rarity]} mon`}>
+                    Trade a spare · +{TRADE_VALUE[c.rarity]} <span lang="ja">文</span>
+                  </button>
+                )}
                 {waiting && !isTarget && phase === 'idle' && (
                   <button type="button" className="btn small stick-now" onClick={() => stickLater(c.id)}>
                     Stick it in
@@ -233,7 +240,17 @@ export default function Gacha({ progress, onPull, onPlaced }: Props) {
       </div>
 
       {/* overlays render at the top of the page: the book's drop-shadow filter would otherwise trap fixed positioning */}
-      {phase === 'open' && result && createPortal(<Reveal result={result} onDone={afterReveal} />, document.body)}
+      {phase === 'open' && result && createPortal(
+        <Reveal
+          result={result}
+          onDone={afterReveal}
+          onTrade={() => {
+            onTrade(result.capsule.id);
+            setPhase('idle');
+          }}
+        />,
+        document.body,
+      )}
       {phase === 'placing' && placing && createPortal(
         <Placement
           id={placing.id}
@@ -285,7 +302,7 @@ function Confetti({ gold }: { gold: boolean }) {
 }
 
 /** The capsule pops open: the halves fly apart in a burst of confetti and the sticker rises out. */
-function Reveal({ result, onDone }: { result: { capsule: Capsule; isNew: boolean }; onDone: () => void }) {
+function Reveal({ result, onDone, onTrade }: { result: { capsule: Capsule; isNew: boolean }; onDone: () => void; onTrade: () => void }) {
   const { capsule: c, isNew } = result;
   const okRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -310,16 +327,27 @@ function Reveal({ result, onDone }: { result: { capsule: Capsule; isNew: boolean
             <StickerArt id={c.id} size={170} tilt={-5} shine={{ x: 0.35, y: 0.3 }} />
           </span>
         </div>
-        <small className="ns-kicker">{isNew ? 'New capsule sticker!' : `Duplicate · ${DUPLICATE_REFUND} mon back`}</small>
+        <small className="ns-kicker">{isNew ? 'New capsule sticker!' : 'A spare! You have this one already'}</small>
         <h2 id="cr-title">
           <span lang="ja">{c.jp}</span> {c.name}
         </h2>
         {c.rarity !== 'common' && <p className={`cr-rarity ${c.rarity}`}>{RARITY_LABEL[c.rarity]}</p>}
         <p className="ns-how">{c.note}</p>
         <div className="ns-actions">
-          <button type="button" className="btn primary" ref={okRef} onClick={onDone}>
-            {isNew ? 'Stick it in →' : 'Lovely'}
-          </button>
+          {isNew ? (
+            <button type="button" className="btn primary" ref={okRef} onClick={onDone}>
+              Stick it in →
+            </button>
+          ) : (
+            <>
+              <button type="button" className="btn primary" ref={okRef} onClick={onTrade}>
+                Trade it in · +{TRADE_VALUE[c.rarity]} mon
+              </button>
+              <button type="button" className="btn ghost" onClick={onDone}>
+                Keep the spare
+              </button>
+            </>
+          )}
         </div>
       </div>
     </div>

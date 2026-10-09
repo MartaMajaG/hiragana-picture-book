@@ -16,13 +16,14 @@ interface AlbumProps {
   onPlaced: (id: string) => void;
   onPull: (seriesId: string) => { capsule: Capsule; isNew: boolean } | null;
   onCapsulePlaced: (id: string) => void;
+  onTrade: (id: string) => void;
   /** Which page of the sticker book is open: the album or the gachapon. */
   tab: 'album' | 'gacha';
   onTab: (t: 'album' | 'gacha') => void;
 }
 
 /** The sticker album: two pages of slots, filled in by hand as stickers are earned. */
-export default function Album({ progress, onOpenPurse, placing, onPlace, onPlaced, onPull, onCapsulePlaced, tab, onTab: setTab }: AlbumProps) {
+export default function Album({ progress, onOpenPurse, placing, onPlace, onPlaced, onPull, onCapsulePlaced, onTrade, tab, onTab: setTab }: AlbumProps) {
   useEffect(() => {
     if (placing) setTab('album');
   }, [placing]);
@@ -116,7 +117,7 @@ export default function Album({ progress, onOpenPurse, placing, onPlace, onPlace
           </button>
         </div>
         {tab === 'gacha' ? (
-          <Gacha progress={progress} onPull={onPull} onPlaced={onCapsulePlaced} />
+          <Gacha progress={progress} onPull={onPull} onPlaced={onCapsulePlaced} onTrade={onTrade} />
         ) : (
           <div className="spread album-spread">
             {half.map((groups, i) => (

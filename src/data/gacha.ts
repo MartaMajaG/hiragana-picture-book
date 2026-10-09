@@ -14,9 +14,9 @@ export interface Capsule {
   shell: [string, string];
 }
 
-/** What a turn of the handle costs, and what a duplicate gives back. */
+/** What a turn of the handle costs, and what a spare (duplicate) sticker trades back for, by rarity. */
 export const GACHA_COST = 30;
-export const DUPLICATE_REFUND = 5;
+export const TRADE_VALUE: Record<Rarity, number> = { common: 10, rare: 15, super: 25 };
 const WEIGHT: Record<Rarity, number> = { common: 10, rare: 7, super: 4 };
 
 const SWEETS: Capsule[] = [
@@ -150,7 +150,7 @@ export const seriesOpen = (p: Progress, i: number) => i === 0 || seriesDone(p, S
 /** What's left in the purse to spend: everything earned, less what's gone into the machine. */
 export const balance = (p: Progress) => p.mon - p.spent;
 
-/** One turn of the handle: pay, get a random capsule (rarer ones less often), and a little back for a duplicate. */
+/** One turn of the handle: pay and get a random capsule (rarer ones less often). Duplicates are kept as spares to trade. */
 export function pull(p: Progress, series: Series, rand = Math.random): { next: Progress; capsule: Capsule; isNew: boolean } | null {
   if (balance(p) < GACHA_COST) return null;
   const pool = series.capsules;
@@ -163,9 +163,16 @@ export function pull(p: Progress, series: Series, rand = Math.random): { next: P
     isNew,
     next: {
       ...p,
-      spent: p.spent + GACHA_COST - (isNew ? 0 : DUPLICATE_REFUND),
+      spent: p.spent + GACHA_COST,
       capsules: { ...p.capsules, [capsule.id]: (p.capsules[capsule.id] ?? 0) + 1 },
       capsuleToStick: isNew ? [...p.capsuleToStick, capsule.id] : p.capsuleToStick,
     },
   };
+}
+
+/** Trade one spare copy of a capsule sticker back for mon. The first copy, the one in the book, can't be traded. */
+export function trade(p: Progress, id: string): Progress | null {
+  const c = CAPSULES.find((x) => x.id === id);
+  if (!c || (p.capsules[id] ?? 0) < 2) return null;
+  return { ...p, spent: p.spent - TRADE_VALUE[c.rarity], capsules: { ...p.capsules, [id]: p.capsules[id] - 1 } };
 }
