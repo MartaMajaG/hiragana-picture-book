@@ -1519,13 +1519,13 @@ html[data-desk='wood'] { --bg: #2a1a12; }
 html[data-tone='light'] body {
   background:
     radial-gradient(ellipse 120% 90% at 50% 35%, transparent 55%, rgba(60, 40, 20, 0.25) 100%),
-    linear-gradient(rgba(246, 241, 230, 0.42), rgba(246, 241, 230, 0.42)),
+    linear-gradient(180deg, rgba(247, 243, 233, 0.86) 0, rgba(247, 243, 233, 0.74) 380px, rgba(247, 243, 233, 0.5) 640px),
     var(--desk-img, none) center / var(--desk-size, cover) var(--desk-repeat, no-repeat),
     #ece4d4;
   background-attachment: fixed;
 }
 html[data-tone='light'] {
-  --bg: #ece4d4; --ink: #2f261d; --muted: #5d4e3e; --line: rgba(60, 40, 20, 0.22); --surface: rgba(255, 252, 244, 0.6);
+  --bg: #ece4d4; --ink: #231a12; --muted: #45372a; --line: rgba(60, 40, 20, 0.22); --surface: rgba(255, 252, 244, 0.6);
   color-scheme: light;
 }
 html[data-tone='light'] .appbar { background: linear-gradient(rgba(250, 246, 236, 0.82), rgba(250, 246, 236, 0.6)); }
@@ -1613,3 +1613,9 @@ html[data-tone='light'] :is(.review-bar h1, .lesson-id .k, .next-up-h, .chart-se
 }
 /* browsers turn text-shadow off on buttons; let the ones written on the desk inherit the halo */
 :is(.review-bar, .lesson-bar, .appbar nav, .purse, .stats, .review-settings, .hunt-note) button { text-shadow: inherit; }
+
+/* the Rows dropdown's chevron in dark ink on the light desk */
+html[data-tone='light'] .row-pick select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23231a12' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  border-bottom-color: rgba(35, 26, 18, 0.45);
+}
