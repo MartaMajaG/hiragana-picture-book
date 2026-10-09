@@ -1494,3 +1494,11 @@ body {
   .review .spread .plate { aspect-ratio: 4 / 3; }
 }
 @media (max-width: 640px) { .review .review-bar p { display: none; } }
+
+/* a series whose super rare is still missing: a gold star on its chip and a note under the shelf, so it isn't forgotten */
+.series-chip.hunting .dot { background: #e3b04b; color: #5e3c1c; font-size: 13px; box-shadow: 0 0 0 3px rgba(227, 176, 75, 0.3); animation: hunt 2.4s ease-in-out infinite; }
+@keyframes hunt { 50% { box-shadow: 0 0 0 6px rgba(227, 176, 75, 0.12); } }
+.hunt-note { margin: 10px 0 0; font-family: var(--hand); font-size: 15px; color: #65533f; }
+.hunt-star { color: #c79a3a; letter-spacing: -0.1em; margin-right: 4px; }
+.hunt-link { border: 0; background: none; padding: 0; font: inherit; color: var(--shu); cursor: pointer; text-decoration: underline; text-decoration-style: wavy; text-decoration-color: rgba(194, 90, 71, 0.4); text-underline-offset: 4px; }
+.hunt-link:hover { text-decoration-color: var(--shu); }

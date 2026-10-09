@@ -56,10 +56,18 @@ const YOKAI: Capsule[] = [
     note: 'Folk tales say a cat that lives very long grows a second tail and gains magic powers, so people once trimmed cats’ tails just in case.' },
   { id: 'gy-nurikabe', jp: '塗壁', reading: 'nurikabe', name: 'Nurikabe', rarity: 'common', shell: ['#9AA3B5', '#FFFFFF'],
     note: 'An invisible wall that blocks tired travellers at night. The trick to get past: tap the bottom of it with a stick.' },
+  { id: 'gy-amabie', jp: 'アマビエ', reading: 'amabie', name: 'Amabie', rarity: 'common', shell: ['#7CC6D6', '#FFFFFF'],
+    note: 'A mermaid-like spirit with a beak and three legs who rose from the sea in 1846 and said: draw my picture and show it to people, and sickness will pass. In 2020 all of Japan drew her.' },
+  { id: 'gy-hitotsume', jp: '一つ目小僧', reading: 'hitotsume-kozō', name: 'One-eyed boy', rarity: 'common', shell: ['#E8A04A', '#FFFFFF'],
+    note: 'A small bald boy with one huge eye who pops out to startle people, then runs off giggling. He is said to be terrified of baskets with many holes, because they have more eyes than him.' },
+  { id: 'gy-rokurokubi', jp: 'ろくろ首', reading: 'rokurokubi', name: 'Long-necked lady', rarity: 'common', shell: ['#F2A7B5', '#FFFFFF'],
+    note: 'By day an ordinary woman; at night, while she sleeps, her neck stretches and stretches so her head can wander about, sometimes to lick the oil from the lamps.' },
   { id: 'gy-tengu', jp: '天狗', reading: 'tengu', name: 'Tengu', rarity: 'rare', shell: ['#C25A47', '#FDF3EC'],
     note: 'Long-nosed mountain spirits, masters of swordsmanship. Legend says they trained the young samurai Minamoto no Yoshitsune.' },
   { id: 'gy-zashiki', jp: '座敷童子', reading: 'zashiki-warashi', name: 'Zashiki-warashi', rarity: 'rare', shell: ['#E07A8A', '#FDF3EC'],
     note: 'A child spirit who lives in old houses and plays pranks. As long as she stays, the family prospers; some inns are famous for her.' },
+  { id: 'gy-baku', jp: '獏', reading: 'baku', name: 'Baku the dream-eater', rarity: 'rare', shell: ['#8A6A9E', '#FDF3EC'],
+    note: 'A gentle beast with an elephant’s trunk who eats bad dreams. Wake from a nightmare, say “Baku-san, please eat my dream” three times, and it will not come back.' },
   { id: 'gy-kyubi', jp: '九尾の狐', reading: 'kyūbi no kitsune', name: 'Nine-tailed fox', rarity: 'super', shell: ['#E3B04B', '#F7E2A0'],
     note: 'Foxes grow a new tail every hundred years. With nine tails, a fox becomes wise, powerful and golden: the rarest yōkai of all.' },
 ];
@@ -185,8 +193,15 @@ export const CAPSULES: Capsule[] = SERIES.flatMap((x) => x.capsules);
 export const seriesDone = (p: Progress, x: Series) => x.capsules.every((c) => p.capsules[c.id]);
 /** The next series opens once everything but the super rare is collected: the super rare can take a long time to turn up. */
 export const seriesUnlocksNext = (p: Progress, x: Series) => x.capsules.every((c) => c.rarity === 'super' || p.capsules[c.id]);
-/** A series is open once the one before it has all but its super rare. */
-export const seriesOpen = (p: Progress, i: number) => i === 0 || seriesUnlocksNext(p, SERIES[i - 1]);
+/**
+ * A series is open once the one before it has all but its super rare. One you've already pulled from stays open, so
+ * adding new capsules to an earlier series never locks you out again.
+ */
+export const seriesOpen = (p: Progress, i: number): boolean =>
+  i === 0 || seriesUnlocksNext(p, SERIES[i - 1]) || SERIES[i].capsules.some((c) => p.capsules[c.id]);
+/** Open, past its unlock point, but its super rare still not found. */
+export const superMissing = (p: Progress, i: number) =>
+  seriesOpen(p, i) && seriesUnlocksNext(p, SERIES[i]) && !seriesDone(p, SERIES[i]);
 
 
 /** What's left in the purse to spend: everything earned, less what's gone into the machine. */

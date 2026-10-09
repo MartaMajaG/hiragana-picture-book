@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import StickerArt, { tiltFor } from './StickerArt';
 import Placement from './Placement';
-import { CAPSULES, TRADE_VALUE, GACHA_COST, SERIES, balance, seriesDone, seriesOpen, seriesUnlocksNext, type Capsule } from '../data/gacha';
+import { CAPSULES, TRADE_VALUE, GACHA_COST, SERIES, balance, seriesDone, seriesOpen, seriesUnlocksNext, superMissing, type Capsule } from '../data/gacha';
 import { CAPSULE, MACHINE } from '../gacha/machine';
 import { pastelize } from '../lib/illustration';
 import { prefersReducedMotion } from '../lib/motion';
@@ -101,6 +101,7 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
           {SERIES.map((x, i) => {
             const open = seriesOpen(progress, i);
             const done = seriesDone(progress, x);
+            const hunting = superMissing(progress, i);
             return (
               <button
                 key={x.id}
@@ -108,20 +109,37 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
                 role="tab"
                 aria-selected={i === si}
                 disabled={!open || phase !== 'idle'}
-                className={`series-chip${done ? ' done' : ''}${open ? '' : ' locked'}`}
+                className={`series-chip${done ? ' done' : ''}${open ? '' : ' locked'}${hunting ? ' hunting' : ''}`}
                 style={{ ['--machine' as string]: x.machine[0] } as React.CSSProperties}
                 onClick={() => setSi(i)}
-                title={open ? x.name : `Collect all of ${SERIES[i - 1].name} except the super rare to unlock`}
+                title={hunting ? `${x.name}: the super rare is still missing` : open ? x.name : `Collect all of ${SERIES[i - 1].name} except the super rare to unlock`}
               >
-                <span className="dot" aria-hidden="true">{done ? '✓' : open ? '' : '🔒'}</span>
+                <span className="dot" aria-hidden="true">{done ? '✓' : hunting ? '★' : open ? '' : '🔒'}</span>
                 <span className="chip-text">
                   <span className="en">{x.name}</span>
                   <span className="jp" lang="ja">{x.jp}</span>
                 </span>
+                {hunting && <span className="sr-only">, super rare still missing</span>}
               </button>
             );
           })}
         </div>
+        {(() => {
+          const hunt = SERIES.map((x, i) => ({ x, i })).filter(({ i }) => superMissing(progress, i) && i !== si);
+          return hunt.length > 0 && phase === 'idle' ? (
+            <p className="hunt-note">
+              <span className="hunt-star" aria-hidden="true">★★</span> Still hiding:{' '}
+              {hunt.map(({ x, i }, j) => (
+                <span key={x.id}>
+                  {j > 0 && ', '}
+                  <button type="button" className="hunt-link" onClick={() => setSi(i)}>
+                    the super rare in {x.name}
+                  </button>
+                </span>
+              ))}
+            </p>
+          ) : null;
+        })()}
         <p className="gacha-intro">
           Spend your mon on a capsule. Each one holds a sticker from the <b>{series.name}</b> series.
         </p>
