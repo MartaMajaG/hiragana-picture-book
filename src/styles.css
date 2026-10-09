@@ -1596,10 +1596,10 @@ h1.lesson-id { margin: 0; font: inherit; }
    solid halo (WCAG technique G18 measures the text against the halo). Dark desks: an almost opaque ink halo under
    light text; the light desk: a paper-coloured halo under dark ink. Muted text is a touch brighter on dark desks. */
 html[data-tone='dark'] { --muted: #cdc5b4; }
-html[data-tone='dark'] :is(.review-bar, .lesson-bar, .next-up-h, .sec-h, .appbar nav, .purse, .stats, .tally, .review-settings, .foot, .hunt-note, .chart-sec) {
+html[data-tone='dark'] :is(.review-bar, .lesson-bar, .next-up-h, .sec-h, .appbar nav, .purse, .stats, .tally, .review-settings, .foot, .chart-sec) {
   text-shadow: 0 0 1px rgba(6, 10, 20, 0.95), 0 0 2px rgba(6, 10, 20, 0.95), 0 0 4px rgba(6, 10, 20, 0.85), 0 1px 10px rgba(6, 10, 20, 0.7);
 }
-html[data-tone='light'] :is(.review-bar, .lesson-bar, .next-up-h, .sec-h, .appbar nav, .purse, .stats, .tally, .review-settings, .foot, .hunt-note, .chart-sec) {
+html[data-tone='light'] :is(.review-bar, .lesson-bar, .next-up-h, .sec-h, .appbar nav, .purse, .stats, .tally, .review-settings, .foot, .chart-sec) {
   text-shadow: 0 0 1px rgba(250, 246, 236, 1), 0 0 2px rgba(250, 246, 236, 1), 0 0 5px rgba(250, 246, 236, 0.9), 0 0 14px rgba(250, 246, 236, 0.8);
 }
 /* the paper-backed parts inside those areas don't need a halo */
@@ -1612,7 +1612,7 @@ html[data-tone='light'] :is(.review-bar h1, .lesson-id .k, .next-up-h, .chart-se
   background: radial-gradient(closest-side, rgba(250, 246, 236, 0.75), transparent); padding-inline: 10px; margin-inline: -10px;
 }
 /* browsers turn text-shadow off on buttons; let the ones written on the desk inherit the halo */
-:is(.review-bar, .lesson-bar, .appbar nav, .purse, .stats, .review-settings, .hunt-note) button { text-shadow: inherit; }
+:is(.review-bar, .lesson-bar, .appbar nav, .purse, .stats, .review-settings) button { text-shadow: inherit; }
 
 /* the Rows dropdown's chevron in dark ink on the light desk */
 html[data-tone='light'] .row-pick select {
