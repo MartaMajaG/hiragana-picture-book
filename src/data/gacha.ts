@@ -121,6 +121,44 @@ const CATS: Capsule[] = [
     note: 'A real calico cat who became station master of Kishi station in Wakayama in 2007, with her own little cap. Visitors came from all over to see her, and saved the railway line.' },
 ];
 
+const ONSEN: Capsule[] = [
+  { id: 'go-noren', jp: 'ゆ', reading: 'yu', name: 'Bathhouse curtain', rarity: 'common', shell: ['#4FA3A0', '#FFFFFF'],
+    note: 'Look for a curtain with the hiragana ゆ (yu, hot water) on it: that’s the entrance to a public bath. Blue is usually for men, red for women.' },
+  { id: 'go-kerorin', jp: 'ケロリン桶', reading: 'Kerorin oke', name: 'Kerorin bucket', rarity: 'common', shell: ['#F2C14E', '#FFFFFF'],
+    note: 'The yellow plastic bucket in almost every bathhouse, printed with an advert for Kerorin headache pills since 1963. It is so loved that people buy them as souvenirs.' },
+  { id: 'go-milk', jp: 'コーヒー牛乳', reading: 'kōhī gyūnyū', name: 'Coffee milk', rarity: 'common', shell: ['#B98A5E', '#FFFFFF'],
+    note: 'After the bath: a cold glass bottle of coffee milk, drunk in one go with your other hand on your hip. It is the rule.' },
+  { id: 'go-tamago', jp: '黒たまご', reading: 'kuro tamago', name: 'Black egg', rarity: 'common', shell: ['#4A4E5E', '#FFFFFF'],
+    note: 'At Owakudani near Hakone, eggs boiled in the volcanic springs turn black. Each one you eat is said to add seven years to your life.' },
+  { id: 'go-mark', jp: '♨', reading: 'onsen kigō', name: 'Hot spring sign', rarity: 'common', shell: ['#D9604E', '#FFFFFF'],
+    note: 'The ♨ symbol, a bowl with three wisps of steam, has marked hot springs on Japanese maps for over a century.' },
+  { id: 'go-capybara', jp: 'カピバラ温泉', reading: 'kapibara onsen', name: 'Bathing capybara', rarity: 'rare', shell: ['#C9864A', '#FDF3EC'],
+    note: 'Since 1982, the capybaras at Izu Shaboten Zoo get their own hot bath every winter, sometimes with yuzu fruit floating in it. They close their eyes and melt.' },
+  { id: 'go-fuji', jp: '富士山の壁画', reading: 'Fujisan no hekiga', name: 'Mt Fuji mural', rarity: 'rare', shell: ['#7CB0D6', '#FDF3EC'],
+    note: 'Old Tokyo bathhouses have a huge painting of Mount Fuji over the bath. Only a few painters still know how to paint them.' },
+  { id: 'go-yukimi', jp: '雪見風呂', reading: 'yukimi-buro', name: 'Snow-viewing bath', rarity: 'super', shell: ['#E3B04B', '#F7E2A0'],
+    note: 'Sitting in a steaming outdoor bath while snow falls around you is called yukimi-buro, snow-viewing bath. Many say it is the best feeling in Japan.' },
+];
+
+const OFFICE: Capsule[] = [
+  { id: 'gs-hanko', jp: '判子', reading: 'hanko', name: 'Name seal', rarity: 'common', shell: ['#C25A47', '#FFFFFF'],
+    note: 'Documents are approved with a personal seal, not a signature. In some offices, juniors stamp at a slight tilt so their seal bows to the boss’s.' },
+  { id: 'gs-meishi', jp: '名刺', reading: 'meishi', name: 'Business card', rarity: 'common', shell: ['#E8E2D2', '#FFFFFF'],
+    note: 'Cards are given and taken with both hands and a bow, then laid on the table in front of you during the meeting. Never write on one!' },
+  { id: 'gs-coffee', jp: '缶コーヒー', reading: 'kan kōhī', name: 'Canned coffee', rarity: 'common', shell: ['#5B6F92', '#FFFFFF'],
+    note: 'Japan has around four million vending machines. In winter they sell coffee in cans that are hot, ready to warm your hands on the way to work.' },
+  { id: 'gs-tsurikawa', jp: '吊り革', reading: 'tsurikawa', name: 'Train strap', rarity: 'common', shell: ['#9AA3B5', '#FFFFFF'],
+    note: 'Tokyo’s morning trains are so full that at some stations staff in white gloves gently push people in so the doors can close.' },
+  { id: 'gs-nekutai', jp: 'ネクタイ鉢巻', reading: 'nekutai hachimaki', name: 'Tie headband', rarity: 'common', shell: ['#D9473A', '#FFFFFF'],
+    note: 'The classic cartoon of a tipsy salaryman after work: necktie tied round his head like a hachimaki headband, singing karaoke.' },
+  { id: 'gs-kanpai', jp: '乾杯', reading: 'kanpai', name: 'Kanpai!', rarity: 'rare', shell: ['#E3A93A', '#FDF3EC'],
+    note: 'The after-work drinking party, nomikai. Pour for others, never for yourself, and hold your glass a little lower than your boss’s when you clink.' },
+  { id: 'gs-capsule', jp: 'カプセルホテル', reading: 'kapuseru hoteru', name: 'Capsule hotel', rarity: 'rare', shell: ['#E8E2D2', '#FDF3EC'],
+    note: 'Invented in Osaka in 1979 for workers who missed the last train home: a bed-sized pod with a light, a TV and a curtain.' },
+  { id: 'gs-shinkansen', jp: '新幹線', reading: 'shinkansen', name: 'Bullet train', rarity: 'super', shell: ['#E3B04B', '#F7E2A0'],
+    note: 'The business trip ride. Since 1964 its average delay has been under a minute, and cleaning crews turn a whole train around in seven minutes.' },
+];
+
 export interface Series {
   id: string;
   jp: string;
@@ -137,6 +175,8 @@ export const SERIES: Series[] = [
   { id: 'festival', jp: '祭り', name: 'Summer festival', machine: ['#E3A93A', '#C48A22', '#9A6A14'], capsules: FESTIVAL },
   { id: 'animals', jp: '動物', name: 'Animals of Japan', machine: ['#6E9A57', '#557D42', '#3E5E30'], capsules: ANIMALS },
   { id: 'cats', jp: '猫', name: 'Cats', machine: ['#E07A8A', '#C25E6E', '#9A4452'], capsules: CATS },
+  { id: 'onsen', jp: '温泉', name: 'Hot springs', machine: ['#4FA3A0', '#3D8582', '#2C6563'], capsules: ONSEN },
+  { id: 'office', jp: 'サラリーマン', name: 'Salaryman life', machine: ['#6B7A8F', '#56647A', '#414D60'], capsules: OFFICE },
 ];
 
 /** Every capsule in every series. */
