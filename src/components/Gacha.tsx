@@ -6,6 +6,7 @@ import { CAPSULES, TRADE_VALUE, GACHA_COST, SERIES, balance, seriesDone, seriesO
 import { CAPSULE, MACHINE } from '../gacha/machine';
 import { pastelize } from '../lib/illustration';
 import { prefersReducedMotion } from '../lib/motion';
+import { downloadSticker, printSticker } from '../lib/printable';
 import type { Progress } from '../lib/progress';
 
 /**
@@ -33,6 +34,8 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
   const [phase, setPhase] = useState<Phase>('idle');
   const [result, setResult] = useState<{ capsule: Capsule; isNew: boolean } | null>(null);
   const [placingId, setPlacingId] = useState<string | null>(null);
+  /** The capsule sticker whose card is open. */
+  const [detail, setDetail] = useState<string | null>(null);
   // open on the newest series that's unlocked and not yet complete
   const [si, setSi] = useState(() => {
     const open = SERIES.map((_, i) => i).filter((i) => seriesOpen(progress, i));
@@ -211,7 +214,9 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
             return (
               <div key={c.id} className={`capsule-slot ${c.rarity}${n && !waiting ? ' have' : ''}${waiting || isTarget ? ' pending' : ''}${isTarget ? ' target' : ''}`} data-capsule={c.id}>
                 {n && !waiting && !isTarget ? (
-                  <StickerArt id={c.id} size={96} tilt={tiltFor(c.id)} />
+                  <button type="button" className="capsule-open" onClick={() => setDetail(c.id)} aria-label={`About ${c.name}`}>
+                    <StickerArt id={c.id} size={96} tilt={tiltFor(c.id)} />
+                  </button>
                 ) : (
                   <span className={`capsule-ghost${waiting || isTarget ? ' halo' : ''}`} aria-hidden="true">
                     {c.rarity === 'super' && !n && !isTarget ? '?' : <StickerArt id={c.id} size={80} />}
@@ -223,11 +228,6 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
                   {n > 1 && <span className="count"> ×{n}</span>}
                 </span>
                 {c.rarity !== 'common' && <span className="rarity">{RARITY_LABEL[c.rarity]}</span>}
-                {n > 1 && !waiting && phase === 'idle' && (
-                  <button type="button" className="btn small trade" onClick={() => onTrade(c.id)} aria-label={`Trade a spare ${c.name} for ${TRADE_VALUE[c.rarity]} mon`}>
-                    Trade a spare · +{TRADE_VALUE[c.rarity]} <span lang="ja">文</span>
-                  </button>
-                )}
                 {waiting && !isTarget && phase === 'idle' && (
                   <button type="button" className="btn small stick-now" onClick={() => stickLater(c.id)}>
                     Stick it in
@@ -239,6 +239,15 @@ export default function Gacha({ progress, onPull, onPlaced, onTrade }: Props) {
         </div>
       </div>
 
+      {detail && createPortal(
+        <CapsuleCard
+          capsule={CAPSULES.find((c) => c.id === detail)!}
+          count={count(detail)}
+          onTrade={() => onTrade(detail)}
+          onClose={() => setDetail(null)}
+        />,
+        document.body,
+      )}
       {/* overlays render at the top of the page: the book's drop-shadow filter would otherwise trap fixed positioning */}
       {phase === 'open' && result && createPortal(
         <Reveal
@@ -349,6 +358,59 @@ function Reveal({ result, onDone, onTrade }: { result: { capsule: Capsule; isNew
             </>
           )}
         </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * A capsule sticker's card: what it is and the story behind it. Spares can be traded back for mon, and owning a spare
+ * unlocks the print-ready sticker (download as SVG or print), so keeping one is worth something too.
+ */
+function CapsuleCard({ capsule: c, count, onTrade, onClose }: { capsule: Capsule; count: number; onTrade: () => void; onClose: () => void }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    ref.current?.focus();
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+  const spares = count - 1;
+  return (
+    <div className="scrim" onClick={onClose}>
+      <div className="sheet capsule-card" role="dialog" aria-modal="true" aria-labelledby="cc-title" tabIndex={-1} ref={ref} onClick={(e) => e.stopPropagation()}>
+        <button type="button" className="icon-btn cc-close" onClick={onClose} aria-label="Close">
+          ×
+        </button>
+        <div className="cc-art" aria-hidden="true">
+          <StickerArt id={c.id} size={180} tilt={-4} shine={{ x: 0.35, y: 0.3 }} />
+        </div>
+        <h2 id="cc-title">
+          <span lang="ja">{c.jp}</span> {c.name}
+        </h2>
+        <p className="cc-reading">
+          <i>{c.reading}</i>
+          {c.rarity !== 'common' && <span className={`cr-rarity ${c.rarity}`}> · {RARITY_LABEL[c.rarity]}</span>}
+          {' · '}
+          {spares > 0 ? `you have ${count} (${spares} ${spares === 1 ? 'spare' : 'spares'})` : 'you have 1, stuck in the book'}
+        </p>
+        <p className="cc-note">{c.note}</p>
+        {spares > 0 ? (
+          <div className="cc-actions">
+            <p className="cc-hint">A spare is yours to print: a real sticker with a cut line, about 6 cm across.</p>
+            <button type="button" className="btn primary" onClick={() => downloadSticker(c.id)}>
+              Download SVG
+            </button>
+            <button type="button" className="btn ghost" onClick={() => printSticker(c.id, c.name)}>
+              Print it
+            </button>
+            <button type="button" className="btn ghost" onClick={onTrade}>
+              Trade a spare · +{TRADE_VALUE[c.rarity]} mon
+            </button>
+          </div>
+        ) : (
+          <p className="cc-hint">Get a spare from the machine to unlock the print-ready sticker, or trade it for mon.</p>
+        )}
       </div>
     </div>
   );
