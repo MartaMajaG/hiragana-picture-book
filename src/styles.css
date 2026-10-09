@@ -1283,6 +1283,10 @@ h1, h2, .lesson-id .r, .purse-stats dd, .slot-jp, .st-text b, .daisen b, .sound-
 .series-chip .jp { font-family: 'Shippori Mincho', serif; font-size: 12px; color: #84715a; }
 .series-shelf { gap: 8px 10px; max-width: 520px; }
 
+/* an open note (sticker, page number, seal…) must sit above the index tabs and page-turn tabs */
+.book-tabs { z-index: 2; }
+.spread:has(.egg:hover), .spread:has(.egg:focus), .spread:has(.egg:focus-within) { z-index: 6; }
+
 @media (prefers-reduced-motion: reduce) { .lift.on .sticker-art, .lift.pressed .sticker-art { transform: none; } }
 
 @media (prefers-reduced-motion: reduce) {
