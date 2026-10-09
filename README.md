@@ -73,3 +73,10 @@ Checking is deliberately forgiving: the goal is a recognisable character, not a 
 
 Stroke order data: [KanjiVG](https://kanjivg.tagaini.net) by Ulrich Apel, licensed CC BY-SA 3.0. Keep this credit visible (it's in the app footer).
 Illustrations and mnemonics are original.
+
+Background photographs (`public/backgrounds/`, resized and compressed):
+
+- `indigo-katazome.jpg`: Japanese stencil-dyed indigo textile, The Metropolitan Museum of Art, public domain, via [Unsplash](https://unsplash.com/photos/-ck4W8l1U-8).
+- `indigo-floral.jpg`: photo by [Jason Leung](https://unsplash.com/photos/4UzGCspRWh8) on Unsplash (Unsplash License).
+- `flowers.jpg`: Japanese painting of pink blossoms, The Cleveland Museum of Art, public domain (CC0), via [Unsplash](https://unsplash.com/photos/_GRWcKm4n3s).
+- `wood.jpg`: "Lacquered Cherry Wood" from [Poly Haven](https://polyhaven.com/a/lacquered_cherry_wood), CC0.

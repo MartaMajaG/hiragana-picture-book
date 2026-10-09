@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { DESKS, loadDesk, saveDesk, type DeskId } from '../lib/desk';
+import { DESKS, deskImage, loadDesk, saveDesk, type DeskId } from '../lib/desk';
 
 /** Settings: the desk the book lies on, and the way into help for the page you're on. */
 export default function SettingsSheet({ onHelp, onClose }: { onHelp: () => void; onClose: () => void }) {
@@ -31,7 +31,7 @@ export default function SettingsSheet({ onHelp, onClose }: { onHelp: () => void;
         <div className="desk-picks" role="radiogroup" aria-label="Background">
           {DESKS.map((d) => (
             <button key={d.id} type="button" role="radio" aria-checked={desk === d.id} className="desk-pick" onClick={() => pick(d.id)}>
-              <span className={`desk-swatch ${d.id}`} aria-hidden="true">
+              <span className="desk-swatch" aria-hidden="true" style={{ backgroundImage: deskImage(d) }}>
                 <span className="mini-book" />
               </span>
               <span className="desk-name">

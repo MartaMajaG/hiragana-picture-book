@@ -1503,47 +1503,44 @@ body {
 .hunt-link { border: 0; background: none; padding: 0; font: inherit; color: var(--shu); cursor: pointer; text-decoration: underline; text-decoration-style: wavy; text-decoration-color: rgba(194, 90, 71, 0.4); text-underline-offset: 4px; }
 .hunt-link:hover { text-decoration-color: var(--shu); }
 
-/* ---------- the desk under the book: chosen in Settings ----------
-   indigo: indigo-dyed cloth stencilled with a faint shippō pattern of linked circles (the default)
-   wood: a walnut desk under lamplight
-   kinpaku: deep green paper flecked with gold leaf, like a fusuma panel */
-:root {
-  --desk-indigo:
-    radial-gradient(ellipse 70% 55% at 22% 0%, rgba(255, 214, 150, 0.12), transparent 70%),
-    radial-gradient(ellipse 120% 90% at 50% 35%, transparent 55%, rgba(5, 10, 20, 0.5) 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56'%3E%3Cg fill='none' stroke='%23a9bde0' stroke-opacity='.13' stroke-width='1.2'%3E%3Ccircle cx='0' cy='0' r='28'/%3E%3Ccircle cx='56' cy='0' r='28'/%3E%3Ccircle cx='0' cy='56' r='28'/%3E%3Ccircle cx='56' cy='56' r='28'/%3E%3Ccircle cx='28' cy='28' r='28'/%3E%3C/g%3E%3C/svg%3E") 0 0 / 56px 56px,
-    var(--dye), #1b2a46;
-  --desk-wood:
-    radial-gradient(ellipse 70% 55% at 22% 0%, rgba(255, 200, 130, 0.16), transparent 70%),
-    radial-gradient(ellipse 120% 90% at 50% 35%, transparent 50%, rgba(10, 5, 0, 0.6) 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0018 .028' numOctaves='5' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 .36  0 0 0 0 .22  0 0 0 0 .12  0 0 0 .9 -.15'/%3E%3C/filter%3E%3Crect width='900' height='900' filter='url(%23w)'/%3E%3C/svg%3E") 0 0 / cover,
-    #2a1a10;
-  --desk-kinpaku:
-    radial-gradient(ellipse 70% 55% at 22% 0%, rgba(255, 220, 160, 0.10), transparent 70%),
-    radial-gradient(ellipse 120% 90% at 50% 35%, transparent 55%, rgba(0, 8, 5, 0.5) 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.09' numOctaves='2' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 .86  0 0 0 0 .7  0 0 0 0 .36  0 0 0 16 -13.4'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23g)'/%3E%3C/svg%3E") 0 0 / 400px 400px,
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='d'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004' numOctaves='3' seed='5'/%3E%3CfeColorMatrix values='0 0 0 0 .1  0 0 0 0 .17  0 0 0 0 .14  0 0 0 .8 -.15'/%3E%3C/filter%3E%3Crect width='600' height='600' filter='url(%23d)'/%3E%3C/svg%3E") 0 0 / cover,
-    #1f302a;
+/* ---------- the desk under the book: a real photograph, chosen in Settings (src/lib/desk.ts) ----------
+   Warm lamplight from the top left and darker edges are laid over the photo, so the book feels lit on a real surface. */
+html body {
+  background:
+    radial-gradient(ellipse 70% 55% at 22% 0%, rgba(255, 214, 150, 0.14), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 35%, transparent 50%, rgba(5, 8, 15, 0.55) 100%),
+    linear-gradient(180deg, rgba(8, 12, 22, 0.66) 0, rgba(8, 12, 22, 0.5) 380px, rgba(8, 12, 22, 0.36) 620px),
+    var(--desk-img, none) center / var(--desk-size, cover) var(--desk-repeat, no-repeat),
+    var(--bg);
+  background-attachment: fixed;
 }
-html body, html[data-desk='indigo'] body { background: var(--desk-indigo); background-attachment: fixed; }
-html[data-desk='wood'] body { background: var(--desk-wood); background-attachment: fixed; }
-html[data-desk='kinpaku'] body { background: var(--desk-kinpaku); background-attachment: fixed; }
-html[data-desk='wood'] { --bg: #2a1a10; }
-html[data-desk='kinpaku'] { --bg: #1f302a; }
+html[data-desk='wood'] { --bg: #2a1a12; }
+/* a light desk: the vignette is softer and words written straight on it switch to dark ink */
+html[data-tone='light'] body {
+  background:
+    radial-gradient(ellipse 120% 90% at 50% 35%, transparent 55%, rgba(60, 40, 20, 0.25) 100%),
+    linear-gradient(rgba(246, 241, 230, 0.42), rgba(246, 241, 230, 0.42)),
+    var(--desk-img, none) center / var(--desk-size, cover) var(--desk-repeat, no-repeat),
+    #ece4d4;
+  background-attachment: fixed;
+}
+html[data-tone='light'] {
+  --bg: #ece4d4; --ink: #2f261d; --muted: #5d4e3e; --line: rgba(60, 40, 20, 0.22); --surface: rgba(255, 252, 244, 0.6);
+  color-scheme: light;
+}
+html[data-tone='light'] .appbar { background: linear-gradient(rgba(250, 246, 236, 0.82), rgba(250, 246, 236, 0.6)); }
 
 /* settings */
 .settings-sheet { width: min(520px, 100%); padding-bottom: 30px; }
 .settings-sheet h2 [lang] { color: var(--shu); margin-right: 6px; }
 .settings-h { font-family: var(--f-display); font-size: 17px; font-weight: 600; margin: 18px 0 10px; }
-.desk-picks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.desk-picks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 .desk-pick { display: flex; flex-direction: column; gap: 4px; padding: 0; border: 0; background: none; cursor: pointer; text-align: left; color: inherit; }
 .desk-swatch {
   position: relative; display: grid; place-items: center; height: 82px; border-radius: 6px; overflow: hidden;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15); outline: 2px solid transparent; outline-offset: 3px; transition: outline-color 0.15s;
 }
-.desk-swatch.indigo { background: var(--desk-indigo); }
-.desk-swatch.wood { background: var(--desk-wood); }
-.desk-swatch.kinpaku { background: var(--desk-kinpaku); }
+.desk-swatch { background-size: cover; background-position: center; }
 .mini-book { width: 54%; height: 52%; border-radius: 2px; background: linear-gradient(90deg, #efe5cb 48%, #d8caa8 50%, #efe5cb 52%); box-shadow: 0 6px 10px -4px rgba(0, 0, 0, 0.6); }
 .desk-pick[aria-checked='true'] .desk-swatch { outline-color: var(--shu); }
 .desk-pick:hover .desk-swatch { outline-color: rgba(194, 90, 71, 0.4); }
@@ -1586,3 +1583,7 @@ html[data-desk='kinpaku'] { --bg: #1f302a; }
 @media (min-width: 821px) and (max-height: 880px) {
   .lesson .spread, .review .spread { padding-top: 36px; padding-bottom: 46px; }
 }
+
+/* words written straight on a photo get a soft halo, so they stay legible over its pattern */
+html[data-tone='dark'] :is(.review-bar, .lesson-bar, .next-up-h, .sec-h, .appbar nav, .purse, .stats, .tally, .review-settings, .foot) { text-shadow: 0 1px 2px rgba(5, 10, 20, 0.85), 0 0 12px rgba(5, 10, 20, 0.6); }
+html[data-tone='light'] :is(.review-bar, .lesson-bar, .next-up-h, .sec-h, .appbar nav, .purse, .stats, .tally, .review-settings, .foot) { text-shadow: 0 0 2px rgba(250, 246, 236, 0.9), 0 0 12px rgba(250, 246, 236, 0.85); }
