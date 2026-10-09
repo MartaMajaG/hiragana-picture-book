@@ -10,7 +10,7 @@ import CoinPurse from './components/CoinPurse';
 import { SERIES, balance, pull, trade } from './data/gacha';
 import { KANA, kanaIndex } from './data/kana';
 import { STICKERS, newlyEarned } from './data/stickers';
-import { MON, currentStreak, loadProgress, saveProgress, touchDay, type Progress } from './lib/progress';
+import { MAX_LEVEL, MON, currentStreak, levelOf, loadProgress, saveProgress, touchDay, type Progress } from './lib/progress';
 
 type Route = { view: 'lesson'; index: number; mode: LessonMode } | { view: 'review' } | { view: 'stickers' };
 
@@ -120,7 +120,12 @@ export default function App() {
         const earned = right ? MON.right + (run >= 10 ? MON.runBonus10 : run >= 5 ? MON.runBonus5 : 0) : 0;
         return touchDay({
           ...p,
-          review: { ...p.review, [romaji]: right ? { ...s, right: s.right + 1 } : { ...s, wrong: s.wrong + 1 } },
+          review: {
+            ...p.review,
+            [romaji]: right
+              ? { ...s, right: s.right + 1, level: Math.min(MAX_LEVEL, (levelOf(s) ?? 0) + 1), last: p.answered }
+              : { ...s, wrong: s.wrong + 1, level: 0, last: p.answered },
+          },
           answered: p.answered + 1,
           run,
           bestRun: Math.max(p.bestRun, run),
@@ -194,7 +199,7 @@ export default function App() {
             />
           </>
         ) : route.view === 'review' ? (
-          <Review stats={progress.review} onResult={recordReview} />
+          <Review stats={progress.review} answered={progress.answered} onResult={recordReview} />
         ) : (
           <Album
             progress={progress}

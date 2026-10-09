@@ -1,10 +1,26 @@
 // Small, local-only progress store. Lives in this browser; nothing is sent anywhere.
 
+/**
+ * How a character is doing in review. `level` is its mastery, 0 to MAX_LEVEL: up one for each right answer, back to 0
+ * after a miss, so it follows how you're doing now rather than your whole history. `last` is the question number
+ * (Progress.answered) when it was last asked, to keep it from coming straight back.
+ */
+export interface ReviewStat {
+  right: number;
+  wrong: number;
+  level?: number;
+  last?: number;
+}
+export const MAX_LEVEL = 5;
+/** Mastery level, worked out from the totals for results saved before levels existed. */
+export const levelOf = (s: ReviewStat | undefined) =>
+  s ? s.level ?? Math.max(0, Math.min(MAX_LEVEL, s.right - s.wrong * 2)) : undefined;
+
 export interface Progress {
   /** Romaji of characters written from memory at least once. */
   written: string[];
   /** Review results per romaji. */
-  review: Record<string, { right: number; wrong: number }>;
+  review: Record<string, ReviewStat>;
   /** One-time tips the learner has already dismissed. */
   tipsSeen: string[];
   /** Romaji of lessons opened at least once. */

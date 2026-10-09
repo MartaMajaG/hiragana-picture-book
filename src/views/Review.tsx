@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import KanaStage from '../components/KanaStage';
 import { CHART, KANA, type Kana } from '../data/kana';
-import type { Progress } from '../lib/progress';
+import { levelOf, type Progress } from '../lib/progress';
 
 type Format = 'read' | 'find';
 
@@ -32,18 +32,29 @@ interface Question {
 
 interface Props {
   stats: Progress['review'];
+  /** How many review questions have been answered in total, to tell how recently each character was asked. */
+  answered: number;
   onResult: (romaji: string, right: boolean) => void;
 }
 
 const shuffle = <T,>(a: T[]) => a.map((x) => [Math.random(), x] as const).sort((p, q) => p[0] - q[0]).map((p) => p[1]);
 
-/** Pick a character, weighted towards the ones missed more often. */
-function pick(stats: Props['stats'], from: Kana[], last?: string): Kana {
+/**
+ * How likely a character is to be asked. Each mastery level halves it, so a character just missed (level 0) comes up
+ * 32 times as often as one you reliably know (level 5); one never asked sits in between. Anything asked in the last
+ * couple of questions is held back, so the answer isn't simply still in your head.
+ */
+export function weightFor(stat: Props['stats'][string] | undefined, answered: number): number {
+  const level = levelOf(stat);
+  const w = level === undefined ? 4 : 32 / 2 ** level;
+  const recent = stat?.last !== undefined && answered - stat.last <= 2;
+  return recent ? w * 0.05 : w;
+}
+
+/** Pick a character, weighted towards the ones that need the most practice. */
+function pick(stats: Props['stats'], answered: number, from: Kana[], last?: string): Kana {
   const pool = from.length > 1 ? from.filter((k) => k.romaji !== last) : from;
-  const weights = pool.map((k) => {
-    const s = stats[k.romaji] ?? { right: 0, wrong: 0 };
-    return (1 + s.wrong * 2) / (1 + s.right * 0.5);
-  });
+  const weights = pool.map((k) => weightFor(stats[k.romaji], answered));
   let r = Math.random() * weights.reduce((a, b) => a + b, 0);
   for (let i = 0; i < pool.length; i++) {
     r -= weights[i];
@@ -52,9 +63,9 @@ function pick(stats: Props['stats'], from: Kana[], last?: string): Kana {
   return pool[pool.length - 1];
 }
 
-function makeQuestion(stats: Props['stats'], settings: Settings, last?: string): Question {
+function makeQuestion(stats: Props['stats'], answered: number, settings: Settings, last?: string): Question {
   const pool = poolFor(settings.row);
-  const kana = pick(stats, pool, last);
+  const kana = pick(stats, answered, pool, last);
   // Wrong answers come from the same row when it has enough characters, so the choice stays a real test.
   const near = pool.length >= 4 ? pool : KANA;
   const others = shuffle(near.filter((k) => k !== kana)).slice(0, 3);
@@ -62,16 +73,16 @@ function makeQuestion(stats: Props['stats'], settings: Settings, last?: string):
   return { kana, format, options: shuffle([...others, kana]) };
 }
 
-export default function Review({ stats, onResult }: Props) {
+export default function Review({ stats, answered, onResult }: Props) {
   const [settings, setSettings] = useState<Settings>(loadSettings);
-  const [q, setQ] = useState<Question>(() => makeQuestion(stats, settings));
+  const [q, setQ] = useState<Question>(() => makeQuestion(stats, answered, settings));
   const [answer, setAnswer] = useState<Kana | null>(null);
   const [tally, setTally] = useState({ right: 0, asked: 0, streak: 0 });
 
   const nextQ = useCallback(() => {
     setAnswer(null);
-    setQ((prev) => makeQuestion(stats, settings, prev.kana.romaji));
-  }, [stats, settings]);
+    setQ((prev) => makeQuestion(stats, answered, settings, prev.kana.romaji));
+  }, [stats, answered, settings]);
 
   const changeSettings = (patch: Partial<Settings>) => {
     const next = { ...settings, ...patch };
@@ -82,7 +93,7 @@ export default function Review({ stats, onResult }: Props) {
       /* storage unavailable: settings last for this visit */
     }
     setAnswer(null);
-    setQ(makeQuestion(stats, next));
+    setQ(makeQuestion(stats, answered, next));
   };
 
   const choose = (k: Kana) => {
