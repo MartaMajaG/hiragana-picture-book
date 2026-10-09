@@ -1356,3 +1356,4 @@ body {
 .opt.right { background: var(--washi), #eef3e0; box-shadow: inset 0 0 0 5px #eef3e0, inset 0 0 0 6px rgba(84, 128, 72, 0.6), 0 10px 16px -12px rgba(60, 40, 20, 0.6); }
 .opt:disabled:not(.right):not(.wrong) { opacity: 0.6; }
 @media (max-width: 640px) { .icon-btn.help, .icon-btn.help:hover { transform: none; } }
+.review-bar h1::after { content: none; }
